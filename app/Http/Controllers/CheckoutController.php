@@ -11,7 +11,7 @@ class CheckoutController extends Controller
 {
     public function show(Request $request, Product $product)
     {
-        $quantity = (int) $request->input('quantity', 1); // ✅ Ensure it's a number
+        $quantity = (int) $request->input('quantity', 1); //it's a number
 
         return Inertia::render('Checkout/Form', [
             'product' => $product,

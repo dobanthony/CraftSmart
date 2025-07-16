@@ -161,44 +161,41 @@ class ProductController extends Controller
         ]);
     }
 
-public function show($id)
-{
-    // ✅ Eager load shop and its ratings for shop_rating accessor to work
-    $product = Product::with(['shop.ratings', 'customization'])->findOrFail($id);
+    public function show($id)
+    {
+        //Eager load shop and its ratings for shop_rating accessor to work
+        $product = Product::with(['shop.ratings', 'customization'])->findOrFail($id);
 
 
-    $user = auth()->user();
-    $shop = $product->shop;
+        $user = auth()->user();
+        $shop = $product->shop;
 
-    // ✅ Get all product-specific ratings with user data
-    $ratings = ShopRating::with('user')
-        ->where('product_id', $product->id)
-        ->latest()
-        ->get();
+        //Get all product-specific ratings with user data
+        $ratings = ShopRating::with('user')
+            ->where('product_id', $product->id)
+            ->latest()
+            ->get();
 
-    // ✅ Compute product average rating
-    $averageRating = round($ratings->avg('product_rating'), 1);
-    $ratingsCount = $ratings->count();
+        //Compute product average rating
+        $averageRating = round($ratings->avg('product_rating'), 1);
+        $ratingsCount = $ratings->count();
 
-    // ✅ Count of approved orders (total sold)
-    $totalSold = Order::where('product_id', $product->id)
-        ->where('status', 'approved')
-        ->count();
+        //Count of approved orders (total sold)
+        $totalSold = Order::where('product_id', $product->id)
+            ->where('status', 'approved')
+            ->count();
 
-    return Inertia::render('User/ProductDetails', [
-        'product' => $product,
-        'ratings' => $ratings,
-        'averageRating' => $averageRating,
-        'ratingsCount' => $ratingsCount,
-        'totalSold' => $totalSold,
-        'isFollowing' => $user
-            ? $user->followedShops()->where('shop_id', $shop->id)->exists()
-            : false,
-        'followerCount' => $shop->followers()->count(),
-    ]);
-}
-
-
-
+        return Inertia::render('User/ProductDetails', [
+            'product' => $product,
+            'ratings' => $ratings,
+            'averageRating' => $averageRating,
+            'ratingsCount' => $ratingsCount,
+            'totalSold' => $totalSold,
+            'isFollowing' => $user
+                ? $user->followedShops()->where('shop_id', $shop->id)->exists()
+                : false,
+            'followerCount' => $shop->followers()->count(),
+        ]);
+    }
 
 }

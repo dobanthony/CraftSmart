@@ -10,12 +10,9 @@ use Inertia\Inertia;
 
 class MessageController extends Controller
 {
-    /**
-     * 🟦 User View: Show messages with a specific shop
-     */
     public function userInbox(Shop $shop)
     {
-        // ✅ Mark unread messages as read
+        //Mark unread messages as read
         Message::where('shop_id', $shop->id)
             ->where('receiver_id', auth()->id())
             ->where('is_read', false)
@@ -37,14 +34,11 @@ class MessageController extends Controller
         ]);
     }
 
-    /**
-     * 🟩 Seller View: Show messages with a specific user
-     */
     public function sellerInbox(User $user)
     {
         $shop = auth()->user()->shop;
 
-        // ✅ Mark unread messages as read
+        //Mark unread messages as read
         Message::where('shop_id', $shop->id)
             ->where('receiver_id', auth()->id())
             ->where('is_read', false)
@@ -66,9 +60,6 @@ class MessageController extends Controller
         ]);
     }
 
-    /**
-     * 📨 Common send message method (used by both User and Seller)
-     */
     public function send(Request $request)
     {
         $data = $request->validate([
@@ -82,15 +73,12 @@ class MessageController extends Controller
             'sender_id'   => auth()->id(),
             'receiver_id' => $data['receiver_id'],
             'message'     => $data['message'],
-            'is_read'     => false, // Sent, not yet read
+            'is_read'     => false,
         ]);
 
         return back();
     }
 
-    /**
-     * 🟦 User Inbox List: Get all shops user chatted with
-     */
     public function userInboxList()
     {
         $userId = auth()->id();
@@ -127,7 +115,7 @@ class MessageController extends Controller
     }
 
     /**
-     * 🟩 Seller Inbox List: Get all users who messaged the shop
+     *Seller Inbox List: Get all users who messaged the shop
      */
     public function sellerInboxList()
     {

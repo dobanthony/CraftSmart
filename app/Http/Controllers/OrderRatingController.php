@@ -14,7 +14,7 @@ class OrderRatingController extends Controller
      */
     public function rateShop(Request $request, Order $order)
     {
-        // ✅ Validate request
+        //Validate request
         $request->validate([
             'shop_rating' => 'required|integer|min:1|max:5',
             'product_rating' => 'required|integer|min:1|max:5',
@@ -22,13 +22,13 @@ class OrderRatingController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // max 2MB
         ]);
 
-        // ✅ Prevent duplicate rating for the same order
+        //Prevent duplicate rating for the same order
         $existingRating = ShopRating::where('order_id', $order->id)->first();
         if ($existingRating) {
             return back()->withErrors(['message' => 'You have already rated this order.']);
         }
 
-        // ✅ Handle image upload
+        //Handle image upload
         $imagePath = null;
         if ($request->hasFile('image')) {
             // Store image in 'storage/app/public/ratings'
@@ -36,7 +36,7 @@ class OrderRatingController extends Controller
             
         }
 
-        // ✅ Save rating with proper image path
+        //Save rating with proper image path
         ShopRating::create([
             'order_id' => $order->id,
             'user_id' => Auth::id(),

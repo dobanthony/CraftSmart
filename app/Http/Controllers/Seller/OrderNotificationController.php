@@ -11,32 +11,30 @@ use Inertia\Inertia;
 class OrderNotificationController extends Controller
 {
     public function index()
-{
-    $notifications = auth()->user()->notifications()
-        ->where('type', OrderStatusNotification::class)
-        ->latest()
-        ->get();
+    {
+        $notifications = auth()->user()->notifications()
+            ->where('type', OrderStatusNotification::class)
+            ->latest()
+            ->get();
 
-    return Inertia::render('Seller/Notifications/Notifications', [
-        'notifications' => $notifications
-    ]);
-}
+        return Inertia::render('Seller/Notifications/Notifications', [
+            'notifications' => $notifications
+        ]);
+    }
 
-public function markAsRead($id)
-{
-    $notification = auth()->user()->notifications()->findOrFail($id);
-    $notification->markAsRead();
+    public function markAsRead($id)
+    {
+        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification->markAsRead();
 
-    return redirect()->to('/receipt/' . $notification->data['order_id']);
-}
-
-
-public function markAllAsRead()
-{
-    auth()->user()->unreadNotifications->markAsRead();
-    return back()->with('success', 'All notifications marked as read.');
-}
+        return redirect()->to('/receipt/' . $notification->data['order_id']);
+    }
 
 
+    public function markAllAsRead()
+    {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back()->with('success', 'All notifications marked as read.');
+    }
 
 }

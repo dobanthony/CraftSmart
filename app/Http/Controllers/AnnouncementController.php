@@ -8,9 +8,8 @@ use Inertia\Inertia;
 
 class AnnouncementController extends Controller
 {
-    /**
-     * Display user-facing announcements.
-     */
+    // Display user-facing announcements.
+
     public function index()
     {
         return Inertia::render('User/Dashboard', [ // ✅ Located at: resources/js/Pages/User/Dashboard.vue
@@ -19,9 +18,7 @@ class AnnouncementController extends Controller
         ]);
     }
 
-    /**
-     * Display admin announcement management page.
-     */
+    //Display admin announcement management page.
     public function adminIndex()
     {
         return Inertia::render('Admin/AdminAnnouncement', [ // ✅ Located at: resources/js/Pages/Admin/AdminAnnouncement.vue
@@ -30,9 +27,7 @@ class AnnouncementController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created announcement.
-     */
+    //Store a newly created announcement.
     public function store(Request $request)
     {
         $request->validate([
@@ -45,9 +40,7 @@ class AnnouncementController extends Controller
         return back()->with('success', 'Announcement created.');
     }
 
-    /**
-     * Update an existing announcement.
-     */
+    //Update an existing announcement.
     public function update(Request $request, $id)
     {
         $announcement = Announcement::findOrFail($id);
@@ -57,9 +50,6 @@ class AnnouncementController extends Controller
         return back()->with('success', 'Announcement updated.');
     }
 
-    /**
-     * Delete the specified announcement.
-     */
     public function destroy($id)
     {
         Announcement::destroy($id);

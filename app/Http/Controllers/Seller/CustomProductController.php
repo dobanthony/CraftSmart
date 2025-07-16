@@ -31,18 +31,18 @@ class CustomProductController extends Controller
             'allow_name' => 'nullable|boolean',
         ]);
 
-        // ✅ Check if user has a shop
+        //Check if user has a shop
         $shop = Auth::user()->shop;
         if (!$shop) {
             return back()->withErrors(['shop' => 'Please create a shop before adding a custom product.']);
         }
 
-        // ✅ Handle image upload
+        //Handle image upload
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
-        // ✅ Create Product with shop_id
+        //Create Product with shop_id
         $product = Product::create([
             'shop_id' => $shop->id,
             'user_id' => Auth::id(),
@@ -53,7 +53,7 @@ class CustomProductController extends Controller
             'image' => $validated['image'] ?? null,
         ]);
 
-        // ✅ Create customization options
+        //Create customization options
         CustomizableProduct::create([
             'product_id' => $product->id,
             'allow_color' => $validated['allow_color'] ?? false,

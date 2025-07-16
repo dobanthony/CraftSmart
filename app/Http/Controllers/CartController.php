@@ -27,11 +27,11 @@ class CartController extends Controller
             ->first();
 
         if ($existingCart) {
-            // ✅ Overwrite existing quantity instead of incrementing
+            //Overwrite existing quantity instead of incrementing
             $existingCart->quantity = $request->quantity;
             $existingCart->save();
         } else {
-            // ✅ Create new cart item
+            //Create new cart item
             Cart::create([
                 'user_id' => auth()->id(),
                 'product_id' => $request->product_id,

@@ -12,27 +12,25 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // ✅ Admin → redirect to the real admin dashboard route that loads metrics & charts
+        // Admin
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
 
-        // ✅ Seller
+        //Seller
         if ($user->role === 'seller') {
             $shop = $user->shop;
 
-            // Seller has a shop → go to seller analytics
             if ($shop) {
                 return redirect()->route('seller.analytics');
             }
 
-            // Seller has no shop → show Create Shop page
             return Inertia::render('Seller/CreateShop', [
                 'user' => $user,
             ]);
         }
-
-        // ✅ Normal user → show user dashboard with announcements
+        
+        //user
         return Inertia::render('User/Dashboard', [
             'user' => $user,
             'announcements' => Announcement::latest()->take(6)->get(),

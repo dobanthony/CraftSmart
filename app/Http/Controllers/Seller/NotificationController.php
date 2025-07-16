@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
@@ -10,7 +9,7 @@ use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
-    // 🔔 Show all seller notifications
+    //Show all seller notifications
     public function index()
     {
         $notifications = Auth::user()->notifications()
@@ -31,7 +30,7 @@ class NotificationController extends Controller
         ]);
     }
 
-    // ✅ Mark one notification as read
+    //Mark one notification as read
     public function markAsRead($id)
     {
         $notification = Auth::user()->notifications()->findOrFail($id);
@@ -39,7 +38,7 @@ class NotificationController extends Controller
         return back(); // Inertia will reload the component state
     }
 
-    // ✅ Mark all notifications as read
+    //Mark all notifications as read
     public function markAllAsRead()
     {
         Auth::user()->unreadNotifications->markAsRead(); // works on unread only
