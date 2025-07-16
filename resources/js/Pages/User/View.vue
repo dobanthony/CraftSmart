@@ -22,7 +22,7 @@
       <div class="row">
         <div
           class="col-6 col-md-4 col-lg-3 mb-4"
-          v-for="product in products"
+          v-for="product in products.data"
           :key="product.id"
         >
           <Link
@@ -45,8 +45,7 @@
                   ₱{{ product.price ?? '0.00' }}
                 </p>
                 <p class="text-muted small">
-                  Sold by:
-                  <strong>{{ product.shop?.user?.name ?? 'Unknown' }}</strong>
+                  Sold by: <strong>{{ product.shop?.user?.name ?? 'Unknown' }}</strong>
                 </p>
               </div>
             </div>
@@ -54,15 +53,27 @@
         </div>
       </div>
 
-      <!-- 📥 Load More -->
-      <div class="text-center mt-4" v-if="hasMore">
-        <button @click="loadMore" class="btn btn-outline-secondary">
-          Load More
-        </button>
-      </div>
+      <!-- 🔢 Traditional Pagination -->
+      <nav v-if="products.links.length > 3" class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+          <li
+            v-for="(link, index) in products.links"
+            :key="index"
+            :class="['page-item', { active: link.active, disabled: !link.url }]"
+          >
+            <Link
+              class="page-link"
+              :href="link.url || ''"
+              v-html="link.label"
+              preserve-scroll
+              preserve-state
+            />
+          </li>
+        </ul>
+      </nav>
 
       <!-- ℹ️ No Products Message -->
-      <div v-if="products.length === 0" class="alert alert-info mt-3">
+      <div v-if="products.data.length === 0" class="alert alert-info mt-3">
         No products found.
       </div>
     </div>
@@ -71,26 +82,11 @@
 
 <script setup>
 import DashboardLayout from '@/Layouts/DashboardLayout.vue'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { router, Link } from '@inertiajs/vue3'
 
 const props = defineProps({
-  products: {
-    type: Array,
-    default: () => []
-  },
-  total: {
-    type: Number,
-    default: 0
-  },
-  limit: {
-    type: Number,
-    default: 5
-  },
-  offset: {
-    type: Number,
-    default: 0
-  },
+  products: Object, // pagination object (data, links, meta)
   search: {
     type: String,
     default: ''
@@ -98,47 +94,15 @@ const props = defineProps({
 })
 
 const search = ref(props.search)
-const limit = ref(props.limit)
-const offset = ref(props.offset)
-const products = ref([...props.products])
-const total = ref(props.total)
 
 const searchProducts = () => {
   router.get(
     '/view',
-    {
-      search: search.value,
-      limit: limit.value,
-      offset: 0
-    },
-    {
-      preserveScroll: true,
-      preserveState: true
-    }
-  )
-}
-
-const loadMore = () => {
-  router.get(
-    '/view',
-    {
-      search: search.value,
-      limit: limit.value,
-      offset: offset.value + limit.value
-    },
+    { search: search.value },
     {
       preserveScroll: true,
       preserveState: true,
-      only: ['products'],
-      onSuccess: (page) => {
-        if (Array.isArray(page.props.products)) {
-          products.value.push(...page.props.products)
-          offset.value += limit.value
-        }
-      }
     }
   )
 }
-
-const hasMore = computed(() => products.value.length < total.value)
 </script>

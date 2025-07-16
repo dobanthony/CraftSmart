@@ -132,34 +132,25 @@ class ProductController extends Controller
     public function showPublic(Request $request)
     {
         $search = $request->input('search');
-        $limit = $request->input('limit', 5);
-        $offset = $request->input('offset', 0);
+        $perPage = $request->input('perPage', 12); // default items per page
 
         $query = Product::with('shop.user');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
+                ->orWhere('description', 'like', "%$search%");
             });
         }
 
-        $total = $query->count();
-
-        $products = $query
-            ->orderBy('id', 'desc')
-            ->offset($offset)
-            ->limit($limit)
-            ->get();
+        $products = $query->orderBy('id', 'desc')->paginate($perPage)->withQueryString();
 
         return Inertia::render('User/View', [
             'products' => $products,
-            'total' => $total,
-            'limit' => (int) $limit,
-            'offset' => (int) $offset,
-            'search' => $search ?? '',
+            'search' => $search,
         ]);
     }
+
 
     public function show($id)
     {

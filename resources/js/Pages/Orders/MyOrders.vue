@@ -17,14 +17,6 @@
         <div class="col-6 col-md-3 col-lg-2">
           <button class="btn btn-primary w-100" @click="handleSearch">Search</button>
         </div>
-
-        <div class="col-6 col-md-3 col-lg-2">
-          <select v-model="limit" class="form-select">
-            <option value="5">5 per page</option>
-            <option value="10">10 per page</option>
-            <option value="20">20 per page</option>
-          </select>
-        </div>
       </div>
 
       <!-- 🔔 Pending Note -->
@@ -166,64 +158,53 @@
         You have no orders matching your search and filter.
       </div>
 
-      <!-- 🔄 Load More -->
-      <div v-if="offset < total" class="text-center mt-4">
-        <button class="btn btn-outline-primary" :disabled="loadingMore" @click="loadMore">
-          {{ loadingMore ? 'Loading...' : 'Load More' }}
-        </button>
-      </div>
+      <!-- 🔢 Pagination -->
+      <nav v-if="orders.links.length > 3" class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+          <li
+            v-for="(link, index) in orders.links"
+            :key="index"
+            :class="['page-item', { active: link.active, disabled: !link.url }]"
+          >
+            <Link
+              class="page-link"
+              :href="link.url || ''"
+              v-html="link.label"
+              preserve-scroll
+              preserve-state
+            />
+          </li>
+        </ul>
+      </nav>
     </div>
   </DashboardLayout>
-
-  <!-- ✅ Success Toast -->
-  <div
-    class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
-    style="z-index: 1055"
-  >
-    <div
-      id="orderSuccessToast"
-      class="toast align-items-center text-bg-success border-0"
-      role="alert"
-      aria-live="assertive"
-      aria-atomic="true"
-    >
-      <div class="d-flex">
-        <div class="toast-body">✅ Order placed! Waiting for seller approval.</div>
-        <button
-          type="button"
-          class="btn-close btn-close-white me-2 m-auto"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-        ></button>
-      </div>
-    </div>
-  </div>
-
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { router, Link, usePage } from '@inertiajs/vue3'
 import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
-// Page Props from Inertia
+// Props
 const props = defineProps({
-  orders: Array,
-  total: Number,
-  limit: Number,
-  offset: Number,
-  search: String
+  orders: Object,
+  search: String,
 })
 
-// State and Viewport Tracking
+// State
 const isMobileView = ref(window.innerWidth <= 768)
-function updateView() {
+const search = ref(props.search ?? '')
+const limit = ref(5)
+const statusFilter = ref('')
+
+// Resize detection
+const updateView = () => {
   isMobileView.value = window.innerWidth <= 768
 }
 onMounted(() => window.addEventListener('resize', updateView))
 onBeforeUnmount(() => window.removeEventListener('resize', updateView))
 
-// Flash Toast
+// Toast
 const page = usePage()
 onMounted(() => {
   const message = page.props.flash?.success
@@ -236,63 +217,24 @@ onMounted(() => {
   }
 })
 
-// Filters and Pagination
-const search = ref(props.search ?? '')
-const limit = ref(Number(props.limit) || 5)
-const offset = ref(Number(props.offset) || 0)
-const total = ref(Number(props.total) || 0)
-const allOrders = ref([...props.orders])
-const loadingMore = ref(false)
-const statusFilter = ref('')
-
-// Watch Props Changes
-watch(() => props.limit, val => limit.value = Number(val || 5))
-watch(() => props.offset, val => offset.value = Number(val || 0))
-watch(() => props.total, val => total.value = Number(val || 0))
-watch(() => props.orders, val => {
-  if (offset.value === 0) {
-    allOrders.value = [...val]
-  } else {
-    allOrders.value.push(...val)
-  }
-})
-
-// Filtered Data and Methods
-const filteredOrders = computed(() => {
-  if (!statusFilter.value) return allOrders.value
-  return allOrders.value.filter(order => order.status === statusFilter.value)
-})
-
-const hasPendingOrder = computed(() =>
-  allOrders.value.some(order => order.status === 'pending')
-)
-
-function handleSearch(reset = true) {
-  const currentOffset = reset ? 0 : offset.value
-  const params = {
+// Methods
+const handleSearch = () => {
+  router.get('/my-orders', {
     search: search.value,
     limit: limit.value,
-    offset: currentOffset
-  }
-
-  router.get('/my-orders', params, {
-    preserveState: true,
+  }, {
     preserveScroll: true,
-    only: ['orders', 'total', 'offset', 'limit'],
-    onStart: () => loadingMore.value = true,
-    onFinish: () => loadingMore.value = false,
-    onSuccess: () => {
-      offset.value = reset ? limit.value : offset.value + limit.value
-    }
+    preserveState: true,
   })
 }
 
-function loadMore() {
-  handleSearch(false)
-}
-
-watch(limit, () => {
-  offset.value = 0
-  handleSearch(true)
+// Filters
+const filteredOrders = computed(() => {
+  if (!statusFilter.value) return props.orders.data
+  return props.orders.data.filter(order => order.status === statusFilter.value)
 })
+
+const hasPendingOrder = computed(() =>
+  props.orders.data.some(order => order.status === 'pending')
+)
 </script>

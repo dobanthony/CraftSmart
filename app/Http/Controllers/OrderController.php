@@ -113,39 +113,29 @@ class OrderController extends Controller
     public function myOrders(Request $request)
     {
         $search = $request->input('search');
-        $limit = (int) $request->input('limit', 5);
-        $offset = (int) $request->input('offset', 0);
+        $limit = (int) $request->input('limit', 10);
 
-        $baseQuery = Order::with(['product.shop.user', 'receivedOrder'])
+        $query = Order::with(['product.shop.user', 'receivedOrder'])
             ->where('user_id', auth()->id());
 
         if ($search) {
-            $baseQuery->where(function ($q) use ($search) {
-                $q->whereHas('product', function ($sub) use ($search) {
-                    $sub->where('name', 'like', "%{$search}%");
-                })->orWhere('status', 'like', "%{$search}%")
-                ->orWhereHas('product.shop.user', function ($sub) use ($search) {
-                    $sub->where('name', 'like', "%{$search}%");
-                });
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('product', fn($sub) =>
+                    $sub->where('name', 'like', "%{$search}%")
+                )
+                ->orWhere('status', 'like', "%{$search}%")
+                ->orWhereHas('product.shop.user', fn($sub) =>
+                    $sub->where('name', 'like', "%{$search}%")
+                );
             });
         }
 
-        $total = (clone $baseQuery)->count();
-
-        $orders = $baseQuery
-            ->orderBy('created_at', 'desc')
-            ->offset($offset)
-            ->limit($limit)
-            ->get();
-
         return Inertia::render('Orders/MyOrders', [
-            'orders' => $orders,
-            'total' => $total,
-            'limit' => $limit,
-            'offset' => $offset,
-            'search' => $search
+            'orders' => $query->latest()->paginate($limit)->withQueryString(),
+            'search' => $search,
         ]);
     }
+
 
     public function receipt(Order $order)
     {
