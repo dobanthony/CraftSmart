@@ -9,6 +9,7 @@ use App\Notifications\OrderIssueReported;
 use App\Notifications\OrderReceivedNotification;
 use App\Notifications\OrderStatusNotification;
 use Illuminate\Http\Request;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
@@ -230,14 +231,15 @@ class OrderController extends Controller
     public function reportIssue(Request $request, Order $order)
     {
         $request->validate([
-            'message' => 'required|min:5'
+            'message' => 'required|min:5',
         ]);
 
         $seller = $order->product->shop->user;
         $seller->notify(new OrderIssueReported($order, $request->message));
 
-        return back()->with('success', 'Issue reported successfully.');
+        return back()->with('success', 'Issue reported.');
     }
+
 
     public function updateDeliveryStatus(Request $request, Order $order)
     {

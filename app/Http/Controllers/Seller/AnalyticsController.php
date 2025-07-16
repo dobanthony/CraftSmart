@@ -65,7 +65,7 @@ class AnalyticsController extends Controller
             ->take(5)
             ->get(['id', 'name']);
 
-        // 🟩 Bar Chart data for top-selling products
+        //Bar Chart data for top-selling products
         $topSellingChartData = $topSelling->map(fn ($product) => [
             'label' => $product->name,
             'total' => (int) $product->total_sold,

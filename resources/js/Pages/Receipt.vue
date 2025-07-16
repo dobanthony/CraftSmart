@@ -1,6 +1,56 @@
 <template>
   <DashboardLayout>
     <div class="container my-5">
+      <!-- ✅ Toast Notification -->
+      <div
+        v-if="toast.message"
+        class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
+        style="z-index: 9999"
+      >
+        <div
+          class="toast show align-items-center border-0"
+          :class="[
+            'text-white',
+            toast.type === 'success' ? 'bg-success' :
+            toast.type === 'danger' ? 'bg-danger' :
+            toast.type === 'warning' ? 'bg-warning text-dark' :
+            'bg-secondary'
+          ]"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div class="d-flex">
+            <div class="toast-body text-center w-100 fw-semibold">
+              {{ toast.message }}
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white me-2 m-auto"
+              @click="toast.message = ''"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ❌ Cancel Confirmation Modal -->
+      <div v-if="showCancelModal" class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5)">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Cancel Order</h5>
+              <button type="button" class="btn-close" @click="showCancelModal = false"></button>
+            </div>
+            <div class="modal-body">Are you sure you want to cancel this order?</div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" @click="showCancelModal = false">Close</button>
+              <button class="btn btn-danger" @click="confirmCancelOrder">Yes, Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Details -->
       <div class="border p-4 shadow-sm rounded bg-white mx-auto" style="max-width: 800px">
         <!-- Delivery Info -->
         <div class="mb-4">
@@ -12,13 +62,13 @@
           <p>{{ order.user?.address ?? 'No address provided' }}</p>
         </div>
 
-        <!-- Product Ordered -->
+        <!-- Product Info -->
         <div class="mb-4">
           <h5 class="fw-bold mb-3">Products Ordered</h5>
           <div class="border rounded p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
-                <strong>Shop Name:</strong> {{ order.product?.shop?.shop_name ?? 'Shop Name' }}
+                <strong>Shop Name:</strong> {{ order.product?.shop?.shop_name ?? 'N/A' }}
               </div>
               <small class="text-muted">Order ID: #{{ order.id }}</small>
             </div>
@@ -42,36 +92,28 @@
           </div>
         </div>
 
-        <!-- Additional Info -->
+        <!-- Order Info -->
         <div class="row">
           <div class="col-md-6 mb-3">
             <p><strong>Seller:</strong> {{ order.product?.shop?.user?.name ?? 'Unknown Seller' }}</p>
             <p><strong>Status:</strong>
-              <span
-                class="badge"
+              <span class="badge"
                 :class="{
                   'bg-warning text-dark': order.status === 'pending',
                   'bg-success': order.status === 'approved',
                   'bg-danger': order.status === 'declined',
                   'bg-info text-dark': order.status === 'received',
                   'bg-dark': order.status === 'canceled'
-                }"
-              >
-                {{ order.status }}
-              </span>
+                }">{{ order.status }}</span>
             </p>
             <p><strong>Date Ordered:</strong> {{ new Date(order.created_at).toLocaleString() }}</p>
             <p><strong>Delivery Status:</strong>
-              <span
-                class="badge"
+              <span class="badge"
                 :class="{
                   'bg-secondary': order.delivery_status === 'pending',
                   'bg-success': order.delivery_status === 'delivered',
                   'bg-danger': order.delivery_status === 'failed'
-                }"
-              >
-                {{ order.delivery_status || 'N/A' }}
-              </span>
+                }">{{ order.delivery_status || 'N/A' }}</span>
             </p>
           </div>
           <div class="col-md-6 mb-3 text-md-end">
@@ -83,98 +125,38 @@
 
         <!-- Buyer Actions -->
         <div v-if="!props.isSeller">
+          <!-- Cancel -->
           <div v-if="order.status === 'pending'" class="mt-4 text-end">
             <button class="btn btn-outline-danger" @click="cancelOrder">❌ Cancel Order</button>
           </div>
 
-          <div
-            v-else-if="order.status === 'approved' && order.delivery_status === 'delivered' && !order.received_order"
-            class="mt-4 text-end"
-          >
-            <button class="btn btn-success me-2" @click="markAsReceived" :disabled="reportSubmitted">
-              ✅ Order Received
-            </button>
-            <button class="btn btn-outline-danger" @click="showReportForm = !showReportForm" :disabled="reportSubmitted">
-              📝 Report for Not Received
-            </button>
-          </div>
+          <!-- Mark as received or report -->
+          <div v-if="order.status === 'approved' && order.delivery_status === 'delivered'">
+            <div v-if="!order.received_order && !hasReported" class="mt-4 text-end">
+              <button class="btn btn-success me-2" @click="markAsReceived">✅ Order Received</button>
+              <button class="btn btn-outline-danger" @click="showReportForm = !showReportForm">📝 Report for Not Received</button>
+            </div>
 
-          <div v-if="showReportForm" class="mt-3 border p-3 rounded bg-light">
-            <h6 class="mb-2">Report an Issue</h6>
-            <textarea
-              v-model="reportMessage"
-              class="form-control mb-2"
-              rows="4"
-              placeholder="Describe the problem with your order..."
-            ></textarea>
-            <button
-              class="btn btn-danger"
-              :disabled="isSubmitting || reportMessage.trim() === ''"
-              @click="submitReport"
-            >
-              {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
-            </button>
-          </div>
+            <!-- Report Form -->
+            <div v-if="showReportForm" class="mt-3 border p-3 rounded bg-light">
+              <h6 class="mb-2">Report an Issue</h6>
+              <textarea
+                v-model="reportMessage"
+                class="form-control mb-2"
+                rows="4"
+                placeholder="Describe the problem with your order..."
+              ></textarea>
+              <button class="btn btn-danger" :disabled="isSubmitting || reportMessage.trim() === ''" @click="submitReport">
+                {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
+              </button>
+            </div>
 
-          <div v-else-if="order.received_order" class="mt-4 alert alert-info text-center">
-            ✅ This order has already been marked as received.
-          </div>
-        </div>
-      </div>
+            <div v-else-if="order.received_order" class="mt-4 alert alert-info text-center">
+              ✅ This order has already been marked as received.
+            </div>
 
-      <!-- Cancel Modal -->
-      <div v-if="showCancelModal" class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5)">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Cancel Order</h5>
-              <button class="btn-close" @click="showCancelModal = false"></button>
-            </div>
-            <div class="modal-body">
-              Are you sure you want to cancel this order?
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary" @click="showCancelModal = false">No</button>
-              <button class="btn btn-danger" @click="confirmCancelOrder">Yes, Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Toast -->
-      <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 2000;">
-        <div
-          v-if="showToast"
-          class="toast align-items-center border-0 show"
-          :class="toastType"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          <div class="d-flex">
-            <div class="toast-body">
-              {{ toastMessage }}
-            </div>
-            <button type="button" class="btn-close me-2 m-auto" @click="showToast = false"></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Rating Modal -->
-      <div v-if="showRatingModal" class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5)">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Rate Your Order</h5>
-              <button type="button" class="btn-close" @click="showRatingModal = false"></button>
-            </div>
-            <div class="modal-body">
-              <!-- Shop Rating -->
-              <!-- ... Your existing rating form ... -->
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary" @click="showRatingModal = false">Cancel</button>
-              <button class="btn btn-primary" @click="submitRating">Submit Rating</button>
+            <div v-else-if="hasReported" class="mt-4 alert alert-info text-center">
+              ⚠️ You have already reported this order as not received.
             </div>
           </div>
         </div>
@@ -184,139 +166,77 @@
 </template>
 
 <script setup>
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
-import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
+import { ref, computed, watch } from 'vue'
+import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
   order: Object,
   userId: Number,
-  isSeller: Boolean
-});
+  isSeller: Boolean,
+  hasReported: Boolean,
+})
 
-const totalAmount = computed(() => (props.order.product?.price ?? 0) * (props.order.quantity ?? 1));
+const hasReported = ref(props.hasReported)
 
-const showReportForm = ref(false);
-const reportMessage = ref('');
-const isSubmitting = ref(false);
-const reportSubmitted = ref(false); // ✅ Disable buttons after report
+watch(() => props.hasReported, (newVal) => {
+  hasReported.value = newVal
+})
 
-const showCancelModal = ref(false);
-const showRatingModal = ref(false);
+const totalAmount = computed(() => {
+  return (props.order.product?.price ?? 0) * (props.order.quantity ?? 1)
+})
 
-const showToast = ref(false);
-const toastMessage = ref('');
-const toastType = ref('text-bg-success'); // ✅ Default success toast
+const toast = ref({ message: '', type: 'success' })
+const showCancelModal = ref(false)
+const showReportForm = ref(false)
+const reportMessage = ref('')
+const isSubmitting = ref(false)
 
-const cancelOrder = () => {
-  showCancelModal.value = true;
-};
+const showToast = (message, type = 'success') => {
+  toast.value = { message, type }
+  setTimeout(() => (toast.value.message = ''), 5000)
+}
+
+const cancelOrder = () => showCancelModal.value = true
 
 const confirmCancelOrder = () => {
-  showCancelModal.value = false;
   router.post(`/orders/${props.order.id}/cancel`, {}, {
     onSuccess: () => {
-      showSuccessToast('❌ Order has been canceled. Redirecting to My Orders...');
-      setTimeout(() => {
-        router.visit('/my-orders', { replace: true, preserveScroll: true });
-      }, 2000);
+      showToast('❌ Order has been canceled. Redirecting to My Orders...', 'danger')
+      router.visit('/my-orders', { replace: true, preserveScroll: true })
     }
-  });
-};
+  })
+  showCancelModal.value = false
+}
 
 const markAsReceived = () => {
   router.post(`/orders/${props.order.id}/received`, {}, {
     onSuccess: () => {
-      showSuccessToast('✅ Order marked as received.');
-      setTimeout(() => {
-        showRatingModal.value = true;
-      }, 1500);
+      showToast('✅ Order marked as received.', 'success')
     }
-  });
-};
+  })
+}
 
 const submitReport = () => {
   if (!reportMessage.value.trim()) {
-    showErrorToast('⚠️ Please enter a report message.');
-    return;
+    showToast('⚠️ Please enter a report message.', 'warning')
+    return
   }
 
-  isSubmitting.value = true;
+  isSubmitting.value = true
   router.post(`/orders/${props.order.id}/report`, { message: reportMessage.value }, {
     onSuccess: () => {
-      reportSubmitted.value = true; // ✅ disable buttons
-      showReportForm.value = false;
-      reportMessage.value = '';
-      showSuccessToast('📨 Report submitted to seller.');
+      showReportForm.value = false
+      reportMessage.value = ''
+      hasReported.value = true
     },
     onFinish: () => {
-      isSubmitting.value = false;
+      showToast('✅ Report submitted successfully.', 'success')
+      isSubmitting.value = false
     }
-  });
-};
-
-const showSuccessToast = (message) => {
-  toastMessage.value = message;
-  toastType.value = 'text-bg-success';
-  showToast.value = true;
-  setTimeout(() => showToast.value = false, 3000);
-};
-
-const showErrorToast = (message) => {
-  toastMessage.value = message;
-  toastType.value = 'text-bg-danger';
-  showToast.value = true;
-  setTimeout(() => showToast.value = false, 3000);
-};
-
-const ratingForm = ref({
-  product_rating: null,
-  shop_rating: null,
-  comment: '',
-  image: null
-});
-const imagePreview = ref(null);
-const hoverProductRating = ref(0);
-const hoverShopRating = ref(0);
-
-const handlePhotoUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    ratingForm.value.image = file;
-    imagePreview.value = URL.createObjectURL(file);
-  }
-};
-
-const removeImage = () => {
-  ratingForm.value.image = null;
-  imagePreview.value = null;
-};
-
-const submitRating = () => {
-  if (!ratingForm.value.product_rating || !ratingForm.value.shop_rating) {
-    showErrorToast('⚠️ Please rate both the product and the shop.');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('product_rating', ratingForm.value.product_rating);
-  formData.append('shop_rating', ratingForm.value.shop_rating);
-  formData.append('comment', ratingForm.value.comment);
-  if (ratingForm.value.image) {
-    formData.append('image', ratingForm.value.image);
-  }
-
-  router.post(`/orders/${props.order.id}/rate-shop`, formData, {
-    forceFormData: true,
-    onSuccess: () => {
-      showSuccessToast('✅ Thank you for your rating!');
-      showRatingModal.value = false;
-      setTimeout(() => {
-        router.visit('/my-orders', { replace: true, preserveScroll: true });
-      }, 2000);
-    }
-  });
-};
+  })
+}
 </script>
 
 <style>
@@ -333,8 +253,5 @@ const submitRating = () => {
     top: 0;
     width: 100%;
   }
-}
-.cursor-pointer {
-  cursor: pointer;
 }
 </style>
