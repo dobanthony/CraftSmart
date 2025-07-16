@@ -46,13 +46,6 @@
           <div class="col-6 col-md-3">
             <button class="btn btn-primary w-100" @click="handleSearch">Search</button>
           </div>
-          <div class="col-6 col-md-3">
-            <select v-model="limit" @change="handleSearch" class="form-select">
-              <option value="5">5 per page</option>
-              <option value="10">10 per page</option>
-              <option value="20">20 per page</option>
-            </select>
-          </div>
         </div>
 
         <!-- 🧾 Products Table (Desktop) -->
@@ -69,7 +62,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="product in allProducts" :key="product.id">
+              <tr v-for="product in products.data" :key="product.id">
                 <td>
                   <img v-if="product.image" :src="`/storage/${product.image}`" alt="Product Image" class="img-thumbnail" style="max-width: 75px" />
                   <span v-else class="text-muted">No image</span>
@@ -89,7 +82,7 @@
 
         <!-- 📱 Card View (Mobile) -->
         <div class="d-block d-md-none">
-          <div v-for="product in allProducts" :key="product.id" class="card mb-3 shadow-sm">
+          <div v-for="product in products.data" :key="product.id" class="card mb-3 shadow-sm">
             <div class="card-body">
               <div class="mb-2 text-center">
                 <img
@@ -113,12 +106,25 @@
           </div>
         </div>
 
-        <!-- 🔄 Load More -->
-        <div v-if="allProducts.length < total" class="text-center mt-4">
-          <button class="btn btn-outline-primary" :disabled="loadingMore" @click="loadMore">
-            {{ loadingMore ? 'Loading...' : 'Load More' }}
-          </button>
-        </div>
+        <!-- 🔢 Pagination -->
+        <nav v-if="products.links.length > 3" class="d-flex justify-content-center mt-4">
+          <ul class="pagination flex-wrap gap-1 justify-content-center">
+            <li
+              v-for="(link, index) in products.links"
+              :key="index"
+              class="page-item"
+              :class="{ active: link.active, disabled: !link.url }"
+            >
+              <Link
+                class="page-link"
+                :href="link.url || ''"
+                v-html="link.label"
+                preserve-scroll
+                preserve-state
+              />
+            </li>
+          </ul>
+        </nav>
       </div>
 
       <!-- ✏️ Edit Product Modal -->
@@ -162,17 +168,22 @@ import { ref } from 'vue'
 import { router, useForm, Link } from '@inertiajs/vue3'
 import SellerDashboardLayout from '@/Layouts/SellerDashboardLayout.vue'
 
+// Props from Laravel
 const props = defineProps({
-  products: Array,
-  total: Number,
-  limit: Number,
-  offset: Number,
-  search: String,
+  products: Object, // now paginated
   shop: Object,
+  search: String,
+  limit: Number
 })
 
-// Add Product
+// State
 const form = useForm({ name: '', price: '', stock: '', description: '', image: null })
+const search = ref(props.search ?? '')
+const limit = ref(props.limit ?? 5)
+const editingProduct = ref(null)
+const editForm = useForm({ id: null, name: '', price: '', stock: '', description: '', image: null })
+
+// Add Product
 function submit() {
   if (!props.shop) return alert('Please create a shop first.')
   form.post('/seller/products', {
@@ -184,9 +195,6 @@ function submit() {
 }
 
 // Edit Product
-const editingProduct = ref(null)
-const editForm = useForm({ id: null, name: '', price: '', stock: '', description: '', image: null })
-
 function openEdit(product) {
   editingProduct.value = product
   editForm.id = product.id
@@ -210,6 +218,7 @@ function updateProduct() {
     })
 }
 
+// Delete Product
 function deleteProduct(id) {
   if (confirm('Are you sure?')) {
     router.delete(`/seller/products/${id}`, {
@@ -219,40 +228,14 @@ function deleteProduct(id) {
   }
 }
 
-// Pagination & Search
-const search = ref(props.search ?? '')
-const limit = ref(props.limit ?? 5)
-const offset = ref(props.offset ?? 0)
-const total = ref(props.total ?? 0)
-const allProducts = ref([...props.products])
-const loadingMore = ref(false)
-
-function handleSearch(reset = true) {
-  const params = {
+// Search Handler
+function handleSearch() {
+  router.get('/seller/products', {
     search: search.value,
     limit: limit.value,
-    offset: reset ? 0 : offset.value
-  }
-  router.get('/seller/products', params, {
+  }, {
     preserveState: true,
     preserveScroll: true,
-    only: ['products', 'total', 'offset'],
-    onStart: () => loadingMore.value = true,
-    onFinish: () => loadingMore.value = false,
-    onSuccess: (page) => {
-      total.value = page.props.total
-      if (reset) {
-        allProducts.value = [...page.props.products]
-        offset.value = limit.value
-      } else {
-        allProducts.value = [...allProducts.value, ...page.props.products]
-        offset.value += limit.value
-      }
-    }
   })
-}
-
-function loadMore() {
-  handleSearch(false)
 }
 </script>

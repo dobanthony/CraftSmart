@@ -30,39 +30,38 @@ class OrderController extends Controller
         return back()->with('success', 'Order placed. Waiting for seller approval.');
     }
 
-
     public function sellerOrders(Request $request)
     {
         $search = $request->input('search');
-        $limit = (int) $request->input('limit', 10);
-        $offset = (int) $request->input('offset', 0);
+        $status = $request->input('status');
 
         $query = Order::with(['product', 'user'])
-            ->whereHas('product.shop', function ($q) {
-                $q->where('user_id', auth()->id());
-            });
+            ->whereHas('product.shop', fn ($q) =>
+                $q->where('user_id', auth()->id())
+            );
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->whereHas('product', fn($sub) =>
+                $q->whereHas('product', fn ($sub) =>
                     $sub->where('name', 'like', "%{$search}%")
-                )->orWhereHas('user', fn($sub) =>
+                )->orWhereHas('user', fn ($sub) =>
                     $sub->where('name', 'like', "%{$search}%")
                 )->orWhere('status', 'like', "%{$search}%");
             });
         }
 
-        $total = (clone $query)->count();
-        $orders = $query->offset($offset)->limit($limit)->latest()->get();
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $orders = $query->latest()->paginate(30)->withQueryString();
 
         return Inertia::render('Seller/Orders', [
             'orders' => $orders,
-            'total' => $total,
-            'limit' => $limit,
-            'offset' => $offset,
-            'search' => $search
+            'filters' => $request->only('search', 'status'),
         ]);
     }
+
 
     public function approve(Request $request, Order $order)
     {
@@ -113,7 +112,7 @@ class OrderController extends Controller
     public function myOrders(Request $request)
     {
         $search = $request->input('search');
-        $limit = (int) $request->input('limit', 10);
+        $limit = (int) $request->input('limit', 30);
 
         $query = Order::with(['product.shop.user', 'receivedOrder'])
             ->where('user_id', auth()->id());

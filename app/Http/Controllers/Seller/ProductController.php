@@ -18,46 +18,42 @@ class ProductController extends Controller
 
         if (!$user->shop) {
             return Inertia::render('Seller/Products', [
-                'products' => [],
-                'total' => 0,
-                'limit' => (int) $request->input('limit', 5),
-                'offset' => (int) $request->input('offset', 0),
+                'products' => [
+                    'data' => [],
+                    'links' => [],
+                ],
                 'search' => $request->input('search', ''),
+                'limit' => (int) $request->input('limit', 30),
                 'shop' => null,
             ]);
         }
 
         $shopId = $user->shop->id;
         $search = $request->input('search');
-        $limit = $request->input('limit', 5);
-        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 30);
 
         $query = Product::where('shop_id', $shopId);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
+                ->orWhere('description', 'like', "%$search%");
             });
         }
 
-        $total = $query->count();
-
         $products = $query
             ->orderBy('id', 'desc')
-            ->offset($offset)
-            ->limit($limit)
-            ->get();
+            ->paginate($limit)
+            ->withQueryString(); // ensures search/limit stays on page change
 
         return Inertia::render('Seller/Products', [
             'products' => $products,
-            'total' => $total,
-            'limit' => (int) $limit,
-            'offset' => (int) $offset,
             'search' => $search,
+            'limit' => $limit,
             'shop' => $user->shop,
         ]);
     }
+
 
     public function store(Request $request)
     {

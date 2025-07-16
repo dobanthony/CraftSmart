@@ -3,7 +3,7 @@
     <div class="container py-5">
       <h2 class="mb-4">🧾 My Orders</h2>
 
-      <!-- 🔍 Search, Limit, and Filter -->
+      <!-- 🔍 Search and Filter -->
       <div class="row mb-4 g-2">
         <div class="col-12 col-md-6 col-lg-4">
           <input
@@ -13,13 +13,12 @@
             placeholder="Search by product, seller, or status"
           />
         </div>
-
         <div class="col-6 col-md-3 col-lg-2">
           <button class="btn btn-primary w-100" @click="handleSearch">Search</button>
         </div>
       </div>
 
-      <!-- 🔔 Pending Note -->
+      <!-- 🔔 Note -->
       <div v-if="hasPendingOrder" class="alert alert-warning d-flex align-items-center gap-2">
         <i class="bi bi-info-circle-fill"></i>
         <div>
@@ -27,11 +26,11 @@
         </div>
       </div>
 
-      <!-- ✅ Desktop Table View -->
-      <div v-if="!isMobileView" class="table-responsive">
+      <!-- ✅ Desktop View -->
+      <div v-if="!isMobile" class="table-responsive">
         <table class="table table-hover align-middle text-center">
           <thead class="table-light">
-            <tr class="text-nowrap">
+            <tr>
               <th>🖼️</th>
               <th>Product</th>
               <th>Price</th>
@@ -55,7 +54,7 @@
               <th>Seller</th>
               <th>Date</th>
               <th>Receipt</th>
-              <th>Delivery Date</th>
+              <th>Delivery</th>
             </tr>
           </thead>
           <tbody>
@@ -65,7 +64,6 @@
                   :src="order.product?.image ? `/storage/${order.product.image}` : 'https://via.placeholder.com/50'"
                   width="50"
                   class="rounded"
-                  alt="Product image"
                 />
               </td>
               <td class="text-wrap">{{ order.product?.name }}</td>
@@ -81,11 +79,11 @@
                     'bg-secondary': order.status === 'canceled'
                   }"
                 >
-                  {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+                  {{ capitalize(order.status) }}
                 </span>
               </td>
               <td>{{ order.product?.shop?.user?.name ?? 'Unknown' }}</td>
-              <td class="text-nowrap">{{ new Date(order.created_at).toLocaleString() }}</td>
+              <td class="text-nowrap">{{ formatDate(order.created_at) }}</td>
               <td>
                 <button
                   v-if="!order.received_order && order.status !== 'canceled'"
@@ -102,16 +100,16 @@
         </table>
       </div>
 
-      <!-- ✅ Mobile Card View -->
+      <!-- 📱 Mobile View -->
       <div v-else class="row g-3">
         <div v-for="order in filteredOrders" :key="order.id" class="col-12">
-          <div class="card shadow-sm border">
+          <div class="card border shadow-sm">
             <div class="card-body">
-              <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="d-flex gap-3 mb-3">
                 <img
                   :src="order.product?.image ? `/storage/${order.product.image}` : 'https://via.placeholder.com/80'"
                   class="rounded"
-                  style="width: 80px; height: 80px; object-fit: cover;"
+                  style="width: 80px; height: 80px; object-fit: cover"
                 />
                 <div>
                   <h5 class="mb-0">{{ order.product?.name }}</h5>
@@ -119,8 +117,8 @@
                 </div>
               </div>
 
-              <p class="mb-1"><strong>Quantity:</strong> {{ order.quantity }}</p>
-              <p class="mb-1">
+              <p><strong>Qty:</strong> {{ order.quantity }}</p>
+              <p>
                 <strong>Status:</strong>
                 <span
                   class="badge"
@@ -131,40 +129,39 @@
                     'bg-secondary': order.status === 'canceled'
                   }"
                 >
-                  {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+                  {{ capitalize(order.status) }}
                 </span>
               </p>
-              <p class="mb-1"><strong>Seller:</strong> {{ order.product?.shop?.user?.name ?? 'Unknown' }}</p>
-              <p class="mb-1"><strong>Date:</strong> {{ new Date(order.created_at).toLocaleString() }}</p>
-              <p class="mb-1"><strong>Delivery Date:</strong> {{ order.delivery_date ?? 'N/A' }}</p>
+              <p><strong>Seller:</strong> {{ order.product?.shop?.user?.name ?? 'Unknown' }}</p>
+              <p><strong>Date:</strong> {{ formatDate(order.created_at) }}</p>
+              <p><strong>Delivery:</strong> {{ order.delivery_date ?? 'N/A' }}</p>
 
-              <div class="mt-3">
-                <button
-                  v-if="!order.received_order && order.status !== 'canceled'"
-                  @click="$inertia.visit(`/receipt/${order.id}`)"
-                  class="btn btn-sm btn-outline-primary w-100"
-                >
-                  View Receipt
-                </button>
-                <span v-else class="text-muted small">Receipt not available</span>
-              </div>
+              <button
+                v-if="!order.received_order && order.status !== 'canceled'"
+                @click="$inertia.visit(`/receipt/${order.id}`)"
+                class="btn btn-sm btn-outline-primary w-100"
+              >
+                View Receipt
+              </button>
+              <span v-else class="text-muted small">Receipt not available</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ℹ️ No Orders -->
+      <!-- ❌ No Results -->
       <div v-if="filteredOrders.length === 0" class="alert alert-info mt-3">
         You have no orders matching your search and filter.
       </div>
 
       <!-- 🔢 Pagination -->
-      <nav v-if="orders.links.length > 3" class="d-flex justify-content-center mt-4">
+      <nav v-if="orders.links.length > 3" class="mt-4 d-flex justify-content-center">
         <ul class="pagination">
           <li
             v-for="(link, index) in orders.links"
             :key="index"
-            :class="['page-item', { active: link.active, disabled: !link.url }]"
+            class="page-item"
+            :class="{ active: link.active, disabled: !link.url }"
           >
             <Link
               class="page-link"
@@ -177,12 +174,36 @@
         </ul>
       </nav>
     </div>
+
+    <!-- ✅ Toast -->
+    <div
+      class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
+      style="z-index: 9999"
+    >
+      <div
+        id="orderSuccessToast"
+        class="toast align-items-center text-bg-success border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">✅ Order placed! Waiting for seller approval.</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
   </DashboardLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { router, Link, usePage } from '@inertiajs/vue3'
+import { usePage, router, Link } from '@inertiajs/vue3'
 import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 // Props
@@ -191,37 +212,31 @@ const props = defineProps({
   search: String,
 })
 
-// State
-const isMobileView = ref(window.innerWidth <= 768)
-const search = ref(props.search ?? '')
-const limit = ref(5)
+// Reactive states
+const search = ref(props.search || '')
 const statusFilter = ref('')
-
-// Resize detection
-const updateView = () => {
-  isMobileView.value = window.innerWidth <= 768
-}
-onMounted(() => window.addEventListener('resize', updateView))
-onBeforeUnmount(() => window.removeEventListener('resize', updateView))
+const isMobile = ref(window.innerWidth <= 768)
 
 // Toast
 const page = usePage()
 onMounted(() => {
-  const message = page.props.flash?.success
-  if (message) {
+  const msg = page.props.flash?.success
+  if (msg) {
     const toastEl = document.getElementById('orderSuccessToast')
-    const toastBody = toastEl.querySelector('.toast-body')
-    toastBody.innerText = message
-    const toast = new bootstrap.Toast(toastEl)
-    toast.show()
+    toastEl.querySelector('.toast-body').innerText = msg
+    new bootstrap.Toast(toastEl).show()
   }
 })
+
+// Resize tracking
+const handleResize = () => isMobile.value = window.innerWidth <= 768
+onMounted(() => window.addEventListener('resize', handleResize))
+onBeforeUnmount(() => window.removeEventListener('resize', handleResize))
 
 // Methods
 const handleSearch = () => {
   router.get('/my-orders', {
     search: search.value,
-    limit: limit.value,
   }, {
     preserveScroll: true,
     preserveState: true,
@@ -237,4 +252,8 @@ const filteredOrders = computed(() => {
 const hasPendingOrder = computed(() =>
   props.orders.data.some(order => order.status === 'pending')
 )
+
+// Helpers
+const formatDate = date => new Date(date).toLocaleString()
+const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
 </script>
