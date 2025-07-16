@@ -27,6 +27,19 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
+    // public function share(Request $request): array
+    // {
+    //     return [
+    //         ...parent::share($request),
+    //         'auth' => [
+    //             'user' => $request->user(),
+    //         ],
+    //         'flash' => [
+    //         'success' => $request->session()->get('success'),
+    //     ],
+
+    //     ];
+    // }
     public function share(Request $request): array
     {
         return [
@@ -35,9 +48,12 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'flash' => [
-            'success' => $request->session()->get('success'),
-        ],
-
+                'success' => $request->session()->get('success'),
+                'error'   => $request->session()->get('error'),
+                'warning' => $request->session()->get('warning'),
+                'info'    => $request->session()->get('info'),
+            ],
         ];
     }
+
 }

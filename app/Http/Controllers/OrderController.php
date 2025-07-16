@@ -311,7 +311,4 @@ public function cancel(Order $order)
     return back()->with('success', 'Order canceled successfully.');
 }
 
-
-
-
 }
