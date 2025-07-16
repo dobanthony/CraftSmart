@@ -30,8 +30,8 @@
               <p
                 class="mb-0 small"
                 :class="{
-                  'text-primary fw-bold': !shop.latest_message?.is_read && shop.latest_message?.receiver_id === $page.props.auth.user.id,
-                  'text-dark': shop.latest_message?.is_read || shop.latest_message?.receiver_id !== $page.props.auth.user.id
+                  'text-dark fw-bold': !shop.latest_message?.is_read && shop.latest_message?.receiver_id === $page.props.auth.user.id,
+                  'text-muted': shop.latest_message?.is_read || shop.latest_message?.receiver_id !== $page.props.auth.user.id
                 }"
               >
                 <template v-if="shop.latest_message">

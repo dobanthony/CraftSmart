@@ -1,11 +1,11 @@
 <template>
   <DashboardLayout>
-  <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>🔔 Notifications</h2>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h4>Notifications</h4>
       <button
         v-if="notifications.length > 0"
-        class="btn btn-sm btn-primary"
+        class="btn btn-sm btn-dark"
         @click="markAllAsRead"
       >
         Mark All as Read
@@ -22,8 +22,8 @@
         :key="notification.id"
         class="list-group-item list-group-item-action"
         :class="{
-          'bg-white text-dark fw-bold': !notification.read_at,
-          'bg-white text-primary fw-normal': notification.read_at
+          'bg-white text-muted fw-bold': !notification.read_at,
+          'bg-white text-dark fw-bold': notification.read_at
         }"
         @click="markAsRead(notification.id, notification.data.order_id)"
         style="cursor: pointer"

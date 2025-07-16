@@ -34,19 +34,19 @@ function truncateContent(content, maxLength = 120) {
   <Head title="Dashboard" />
 
   <DashboardLayout>
-    <div class="container py-5">
-      <h1 class="fw-bold mb-4">User Dashboard</h1>
+    <div class="container">
+      <h2 class="text-dark fw-bold">User Dashboard</h2>
 
       <!-- ✅ Card: Update Profile -->
       <div class="card shadow-sm border-0 mb-5">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header bg-success text-white">
           Update Your Profile Information
         </div>
         <div class="card-body">
           <p class="mb-3">
             Keep your account information up-to-date. You can edit your name, email, and password here.
           </p>
-          <Link href="/profile" class="btn btn-outline-primary">
+          <Link href="/profile" class="btn btn-outline-success">
             Go to Profile Settings
           </Link>
         </div>
@@ -58,7 +58,7 @@ function truncateContent(content, maxLength = 120) {
       </div>
 
       <!-- No Announcements -->
-      <div v-if="announcements.length === 0" class="alert alert-secondary text-center shadow-sm">
+      <div v-if="announcements.length === 0" class="alert alert-success text-center shadow-sm">
         No announcements have been posted yet.
       </div>
 
@@ -72,7 +72,7 @@ function truncateContent(content, maxLength = 120) {
           <div class="card h-100 border-0 shadow-sm announcement-card">
             <div class="card-body d-flex flex-column justify-content-between">
               <div>
-                <h5 class="card-title text-primary fw-semibold">
+                <h5 class="card-title text-dark fw-semibold">
                   {{ announcement.title }}
                 </h5>
                 <p class="card-text text-muted">

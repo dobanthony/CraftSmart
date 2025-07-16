@@ -1,80 +1,91 @@
 <template>
   <div>
     <!-- Sidebar -->
-    <nav id="sidebar" class="p-3 text-white" :class="{ show: sidebarOpen }">
-      <form class="mb-3">
-        <input type="text" class="form-control form-control-sm" placeholder="Search..." />
-      </form>
+    <nav id="sidebar" class="p-3 text-white bg-success" :class="{ show: sidebarOpen }">
+  <!-- Brand -->
+  <h4 class="text-center fw-bold mb-3">CraftSmart</h4>
+  <hr class="bg-secondary" />
 
-      <ul class="nav flex-column mb-3">
-        <!-- <li class="nav-item">
-          <Link href="/dashboard" class="nav-link" :class="{ active: page.url === '/dashboard' }">Dashboard</Link>
-        </li> -->
+  <!-- Navigation -->
+  <ul class="nav flex-column mb-3">
 
+    <!-- Home -->
+    <li class="nav-item">
+      <Link href="/user/dashboard" class="nav-link text-white">
+        <i class="bi bi-house-door me-2"></i> Home
+      </Link>
+    </li>
 
-<Link href="/user/dashboard" class="nav-link">
-    Home
-  </Link>
+    <!-- Browse All Products -->
+    <li class="nav-item">
+      <Link href="/view" class="nav-link text-white">
+        <i class="bi bi-grid me-2"></i> Products
+      </Link>
+    </li>
 
+    <!-- My Orders -->
+    <li class="nav-item">
+      <Link href="/my-orders" class="nav-link text-white">
+        <i class="bi bi-receipt me-2"></i> Orders
+      </Link>
+    </li>
 
-        <li class="nav-item"><Link href="/view" class="nav-link">Browse All Products </Link></li>
-        <li class="nav-item"><Link href="/my-orders" class="nav-link">🧾 My Orders</Link></li>
-        <!-- <li class="nav-item"><Link href="/notifications" class="nav-link">🔔Notifications</Link></li> -->
-
-
-
-        <li class="nav-item position-relative">
-  <Link
-    href="/user/inbox"
-    class="nav-link d-flex align-items-center text-white"
-    @click="inboxClicked = true"
-  >
-    📩 Inbox
-    <span
-      v-if="!inboxClicked && unreadMessagesCount > 0"
-      class="badge bg-danger ms-2"
-      style="font-size: 0.7rem;"
-    >
-      {{ unreadMessagesCount }}
-    </span>
-  </Link>
-</li>
-
-
-
-
-  <li class="nav-item position-relative">
-    <Link
-      href="/notifications"
-      class="nav-link d-flex align-items-center"
-      @click="store.markAllAsRead"
-    >
-      🔔 Notifications
-      <span
-        v-if="store.unreadCount > 0"
-        class="badge bg-danger ms-1"
-        style="font-size: 0.7rem;"
+    <!-- Inbox with Badge -->
+    <li class="nav-item position-relative">
+      <Link
+        href="/user/inbox"
+        class="nav-link d-flex justify-content-between align-items-center text-white"
+        @click="inboxClicked = true"
       >
-        {{ store.unreadCount }}
-      </span>
-    </Link>
-  </li>
+        <span><i class="bi bi-envelope me-2"></i> Message</span>
+        <span
+          v-if="!inboxClicked && unreadMessagesCount > 0"
+          class="badge bg-danger ms-2"
+          style="font-size: 0.75rem;"
+        >
+          {{ unreadMessagesCount }}
+        </span>
+      </Link>
+    </li>
+
+    <!-- Notifications with Badge -->
+    <li class="nav-item position-relative">
+      <Link
+        href="/notifications"
+        class="nav-link d-flex justify-content-between align-items-center text-white"
+        @click="store.markAllAsRead"
+      >
+        <span><i class="bi bi-bell me-2"></i> Notifications</span>
+        <span
+          v-if="store.unreadCount > 0"
+          class="badge bg-danger ms-1"
+          style="font-size: 0.75rem;"
+        >
+          {{ store.unreadCount }}
+        </span>
+      </Link>
+    </li>
+
+    <!-- Cart -->
+    <li class="nav-item">
+      <Link href="/cart" class="nav-link text-white">
+        <i class="bi bi-cart me-2"></i> Cart
+      </Link>
+    </li>
+
+    <!-- Apply as Seller -->
+    <li class="nav-item">
+      <Link href="/apply-seller" class="nav-link text-white">
+        <i class="bi bi-briefcase me-2"></i> Apply as Seller
+      </Link>
+    </li>
+
+  </ul>
+
+  <hr class="bg-secondary" />
+</nav>
 
 
-
-
-        <li class="nav-item"><Link href="/cart" class="nav-link">Cart</Link></li>
-        <!-- <li class="nav-item"><Link href="/user/inbox" class="nav-link text-white">📩 Inbox</Link></li> -->
-
-<Link class="nav-link" href="/apply-seller">Apply as Seller</Link>
-
-
-
-
-
-      </ul>
-      <hr class="bg-secondary" />
-    </nav>
 
     <!-- Desktop Sidebar Toggle -->
     <button
@@ -230,7 +241,6 @@ body {
 #sidebar {
   width: 250px;
   height: 100vh;
-  background-color: #343a40;
   position: fixed;
   top: 0;
   left: -250px;

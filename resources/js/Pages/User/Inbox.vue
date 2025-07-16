@@ -1,7 +1,7 @@
 <template>
   <DashboardLayout>
-  <div class="container py-4">
-    <h3 class="mb-4">💬 Chat with {{ shop.shop_name }}</h3>
+  <div class="container">
+    <h4 class="mb-4">💬{{ shop.shop_name }}</h4>
 
     <!-- Chat Messages -->
     <div class="chat-box mb-3 p-3 border rounded bg-light">

@@ -1,8 +1,6 @@
 <template>
   <DashboardLayout>
-    <div class="container py-5">
-      <h2 class="mb-4">🧾 My Orders</h2>
-
+    <div class="container">
       <!-- 🔍 Search and Filter -->
       <div class="row mb-4 g-2">
         <div class="col-12 col-md-6 col-lg-4">
@@ -14,7 +12,7 @@
           />
         </div>
         <div class="col-6 col-md-3 col-lg-2">
-          <button class="btn btn-primary w-100" @click="handleSearch">Search</button>
+          <button class="btn btn-dark w-100" @click="handleSearch">Search</button>
         </div>
       </div>
 
@@ -29,7 +27,7 @@
       <!-- ✅ Desktop View -->
       <div v-if="!isMobile" class="table-responsive">
         <table class="table table-hover align-middle text-center">
-          <thead class="table-light">
+          <thead class="table-dark">
             <tr>
               <th>🖼️</th>
               <th>Product</th>
@@ -37,10 +35,10 @@
               <th>Qty</th>
               <th>
                 <div class="d-flex flex-column align-items-center gap-1">
-                  <span>Status</span>
+                  <span></span>
                   <select
                     v-model="statusFilter"
-                    class="form-select form-select-sm"
+                    class="form-select form-select-sm text-center"
                     style="width: 130px"
                   >
                     <option value="">All</option>
@@ -257,3 +255,24 @@ const hasPendingOrder = computed(() =>
 const formatDate = date => new Date(date).toLocaleString()
 const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
 </script>
+
+<style scoped>
+input.form-control:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+}
+.pagination .page-link {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(0, 0, 0);
+}
+.pagination .page-link:hover {
+  color: white;
+  background-color: #333;
+  border-color: #ffffff;
+}
+.pagination .page-link:focus {
+  border-color: black;
+  box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.5); /* black with 50% opacity */
+}
+</style>

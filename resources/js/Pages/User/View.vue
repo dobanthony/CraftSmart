@@ -1,7 +1,7 @@
 <template>
   <DashboardLayout>
-    <div class="container py-4">
-      <h2 class="mb-4">🛍️ All Products</h2>
+    <div class="container">
+      <h2 class="mb-4 text-dark">Products</h2>
 
       <!-- 🔍 Search Form -->
       <form @submit.prevent="searchProducts" class="row g-2 mb-4">
@@ -14,7 +14,7 @@
           />
         </div>
         <div class="col-md-2">
-          <button type="submit" class="btn btn-primary w-100">Search</button>
+          <button type="submit" class="btn btn-success w-100">Search</button>
         </div>
       </form>
 
@@ -37,7 +37,7 @@
                 style="height: 200px; object-fit: cover;"
               />
               <div class="card-body">
-                <h5 class="card-title text-primary">{{ product.name }}</h5>
+                <h5 class="card-title text-dark">{{ product.name }}</h5>
                 <p class="card-text small text-muted">
                   {{ product.description }}
                 </p>
@@ -106,3 +106,25 @@ const searchProducts = () => {
   )
 }
 </script>
+
+<style scoped>
+input.form-control:focus {
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25); /* green with 25% opacity */
+}
+.pagination .page-link {
+  color: #28a745; /* green */
+  background-color: rgb(255, 255, 255);
+  border-color: #28a745; /* green */
+}
+.pagination .page-link:hover {
+  color: white;
+  background-color: #28a745; /* green */
+  border-color: #ffffff;
+}
+.pagination .page-link:focus {
+  border-color: black;
+  box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.5); /* black with 50% opacity */
+}
+</style>
+
