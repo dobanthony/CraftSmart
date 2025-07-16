@@ -30,82 +30,77 @@ class OrderController extends Controller
     }
 
 
-public function sellerOrders(Request $request)
-{
-    $search = $request->input('search');
-    $limit = (int) $request->input('limit', 10);
-    $offset = (int) $request->input('offset', 0);
+    public function sellerOrders(Request $request)
+    {
+        $search = $request->input('search');
+        $limit = (int) $request->input('limit', 10);
+        $offset = (int) $request->input('offset', 0);
 
-    $query = Order::with(['product', 'user'])
-        ->whereHas('product.shop', function ($q) {
-            $q->where('user_id', auth()->id());
-        });
+        $query = Order::with(['product', 'user'])
+            ->whereHas('product.shop', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
 
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->whereHas('product', fn($sub) =>
-                $sub->where('name', 'like', "%{$search}%")
-            )->orWhereHas('user', fn($sub) =>
-                $sub->where('name', 'like', "%{$search}%")
-            )->orWhere('status', 'like', "%{$search}%");
-        });
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('product', fn($sub) =>
+                    $sub->where('name', 'like', "%{$search}%")
+                )->orWhereHas('user', fn($sub) =>
+                    $sub->where('name', 'like', "%{$search}%")
+                )->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+
+        $total = (clone $query)->count();
+        $orders = $query->offset($offset)->limit($limit)->latest()->get();
+
+        return Inertia::render('Seller/Orders', [
+            'orders' => $orders,
+            'total' => $total,
+            'limit' => $limit,
+            'offset' => $offset,
+            'search' => $search
+        ]);
     }
-
-    $total = (clone $query)->count();
-    $orders = $query->offset($offset)->limit($limit)->latest()->get();
-
-    return Inertia::render('Seller/Orders', [
-        'orders' => $orders,
-        'total' => $total,
-        'limit' => $limit,
-        'offset' => $offset,
-        'search' => $search
-    ]);
-}
-
-
-
 
     public function approve(Request $request, Order $order)
-{
-    if ($order->status !== 'pending') {
-        return back()->with('error', 'This order has already been processed.');
+    {
+        if ($order->status !== 'pending') {
+            return back()->with('error', 'This order has already been processed.');
+        }
+
+        $request->validate([
+            'delivery_date' => 'required|date|after_or_equal:today'
+        ]);
+
+        $product = $order->product;
+
+        if ($product->stock < $order->quantity) {
+            return back()->with('error', 'Not enough stock to approve the order.');
+        }
+
+        $product->decrement('stock', $order->quantity);
+
+        $order->update([
+            'status' => 'approved',
+            'delivery_date' => $request->delivery_date
+        ]);
+
+        // Notify buyer
+        $order->user->notify(new OrderStatusNotification($order, '✅ Your order has been approved!'));
+
+        return back()->with('success', 'Order approved with delivery date.');
     }
-
-    $request->validate([
-        'delivery_date' => 'required|date|after_or_equal:today'
-    ]);
-
-    $product = $order->product;
-
-    if ($product->stock < $order->quantity) {
-        return back()->with('error', 'Not enough stock to approve the order.');
-    }
-
-    $product->decrement('stock', $order->quantity);
-
-    $order->update([
-        'status' => 'approved',
-        'delivery_date' => $request->delivery_date
-    ]);
-
-    // Notify buyer
-    $order->user->notify(new OrderStatusNotification($order, '✅ Your order has been approved!'));
-
-    return back()->with('success', 'Order approved with delivery date.');
-}
-
 
     public function decline(Order $order)
-{
-    $order->update(['status' => 'declined']);
+    {
+        $order->update(['status' => 'declined']);
 
-    // Notify buyer
-    $order->user->notify(new OrderStatusNotification($order, '❌ Your order has been declined.'));
+        // Notify buyer
+        $order->user->notify(new OrderStatusNotification($order, '❌ Your order has been declined.'));
 
-    return back()->with('error', 'Order declined.');
-}
-
+        return back()->with('error', 'Order declined.');
+    }
 
     public function show(Order $order)
     {
@@ -114,47 +109,42 @@ public function sellerOrders(Request $request)
         ]);
     }
 
+    public function myOrders(Request $request)
+    {
+        $search = $request->input('search');
+        $limit = (int) $request->input('limit', 5);
+        $offset = (int) $request->input('offset', 0);
 
-public function myOrders(Request $request)
-{
-    $search = $request->input('search');
-    $limit = (int) $request->input('limit', 5);
-    $offset = (int) $request->input('offset', 0);
+        $baseQuery = Order::with(['product.shop.user', 'receivedOrder'])
+            ->where('user_id', auth()->id());
 
-    $baseQuery = Order::with(['product.shop.user', 'receivedOrder'])
-        ->where('user_id', auth()->id());
-
-    if ($search) {
-        $baseQuery->where(function ($q) use ($search) {
-            $q->whereHas('product', function ($sub) use ($search) {
-                $sub->where('name', 'like', "%{$search}%");
-            })->orWhere('status', 'like', "%{$search}%")
-              ->orWhereHas('product.shop.user', function ($sub) use ($search) {
-                $sub->where('name', 'like', "%{$search}%");
+        if ($search) {
+            $baseQuery->where(function ($q) use ($search) {
+                $q->whereHas('product', function ($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%");
+                })->orWhere('status', 'like', "%{$search}%")
+                ->orWhereHas('product.shop.user', function ($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%");
+                });
             });
-        });
+        }
+
+        $total = (clone $baseQuery)->count();
+
+        $orders = $baseQuery
+            ->orderBy('created_at', 'desc')
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
+
+        return Inertia::render('Orders/MyOrders', [
+            'orders' => $orders,
+            'total' => $total,
+            'limit' => $limit,
+            'offset' => $offset,
+            'search' => $search
+        ]);
     }
-
-    $total = (clone $baseQuery)->count();
-
-    $orders = $baseQuery
-        ->orderBy('created_at', 'desc')
-        ->offset($offset)
-        ->limit($limit)
-        ->get();
-
-    return Inertia::render('Orders/MyOrders', [
-        'orders' => $orders,
-        'total' => $total,
-        'limit' => $limit,
-        'offset' => $offset,
-        'search' => $search
-    ]);
-}
-
-
-
-
 
     public function receipt(Order $order)
     {
@@ -171,21 +161,18 @@ public function myOrders(Request $request)
         ]);
     }
 
-public function sellerReceipt(Order $order)
-{
-    try {
-        return Inertia::render('Seller/Orders/Receipt', [
-            'order' => $order->load('user', 'product.shop.user'),
-            'userId' => auth()->id(),
-            'isSeller' => true,
-        ]);
-    } catch (\Exception $e) {
-        dd($e->getMessage()); // Debug error
+    public function sellerReceipt(Order $order)
+    {
+        try {
+            return Inertia::render('Seller/Orders/Receipt', [
+                'order' => $order->load('user', 'product.shop.user'),
+                'userId' => auth()->id(),
+                'isSeller' => true,
+            ]);
+        } catch (\Exception $e) {
+            dd($e->getMessage()); // Debug error
+        }
     }
-}
-
-
-
 
     // In OrderController
     public function storeBulk(Request $request)
@@ -271,44 +258,44 @@ public function sellerReceipt(Order $order)
     }
 
     public function submitReview(Request $request, Order $order)
-{
-    $request->validate([
-        'rating' => 'required|integer|min:1|max:5',
-        'comment' => 'required|string|max:1000',
-        'product_id' => 'required|exists:products,id',
-        'photo' => 'nullable|image|max:2048',
-    ]);
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+            'product_id' => 'required|exists:products,id',
+            'photo' => 'nullable|image|max:2048',
+        ]);
 
-    if (Review::where('user_id', auth()->id())->where('order_id', $order->id)->exists()) {
-        return back()->with('message', 'You already reviewed this order.');
+        if (Review::where('user_id', auth()->id())->where('order_id', $order->id)->exists()) {
+            return back()->with('message', 'You already reviewed this order.');
+        }
+
+        $photoPath = $request->hasFile('photo')
+            ? $request->file('photo')->store('review_photos', 'public')
+            : null;
+
+        Review::create([
+            'user_id' => auth()->id(),
+            'product_id' => $request->product_id,
+            'order_id' => $order->id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+            'photo' => $photoPath,
+        ]);
+
+        return back()->with('message', 'Review submitted successfully.');
     }
 
-    $photoPath = $request->hasFile('photo')
-        ? $request->file('photo')->store('review_photos', 'public')
-        : null;
+    public function cancel(Order $order)
+    {
+        if ($order->status !== 'pending') {
+            return back()->withErrors(['message' => 'Only pending orders can be canceled.']);
+        }
 
-    Review::create([
-        'user_id' => auth()->id(),
-        'product_id' => $request->product_id,
-        'order_id' => $order->id,
-        'rating' => $request->rating,
-        'comment' => $request->comment,
-        'photo' => $photoPath,
-    ]);
+        $order->update(['status' => 'canceled', 'delivery_status' => 'canceled']);
 
-    return back()->with('message', 'Review submitted successfully.');
-}
 
-public function cancel(Order $order)
-{
-    if ($order->status !== 'pending') {
-        return back()->withErrors(['message' => 'Only pending orders can be canceled.']);
+        return back()->with('success', 'Order canceled successfully.');
     }
-
-    $order->update(['status' => 'canceled', 'delivery_status' => 'canceled']);
-
-
-    return back()->with('success', 'Order canceled successfully.');
-}
 
 }
