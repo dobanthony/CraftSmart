@@ -34,13 +34,13 @@ function truncateContent(content, maxLength = 120) {
   <Head title="Dashboard" />
 
   <DashboardLayout>
-    <div class="container">
-      <h2 class="text-dark fw-bold">User Dashboard</h2>
+    <div class="container py-5">
+      <h2 class="text-dark fw-bold mb-4">👤 User Dashboard</h2>
 
       <!-- ✅ Card: Update Profile -->
-      <div class="card shadow-sm border-0 mb-5">
-        <div class="card-header bg-success text-white">
-          Update Your Profile Information
+      <div class="card shadow-sm border-0 mb-5 rounded-4">
+        <div class="card-header bg-success text-white rounded-top-4">
+          <strong>Update Your Profile Information</strong>
         </div>
         <div class="card-body">
           <p class="mb-3">
@@ -52,30 +52,30 @@ function truncateContent(content, maxLength = 120) {
         </div>
       </div>
 
-      <!-- 📢 Latest Announcements -->
-      <div class="d-flex justify-content-between align-items-center bg-success mb-4">
-        <div class="text-white m-2">📢 Announcements</div>
+      <!-- 📢 Announcements Header -->
+      <div class="d-flex justify-content-between align-items-center bg-success text-white p-2 rounded mb-4">
+        <strong class="ms-2">📢 Latest Announcements</strong>
       </div>
 
       <!-- No Announcements -->
-      <div v-if="announcements.length === 0" class="alert alert-success text-center shadow-sm">
+      <div v-if="announcements.length === 0" class="alert alert-success text-center shadow-sm rounded-3">
         No announcements have been posted yet.
       </div>
 
       <!-- ✅ Responsive Announcement Grid: 2 on mobile, 4 on desktop -->
-      <div class="row row-cols-2 row-cols-lg-4 g-4">
+      <div class="row row-cols-2 row-cols-md-3 g-4">
         <div
           v-for="announcement in announcements"
           :key="announcement.id"
           class="col"
         >
-          <div class="card h-100 border-0 shadow-sm announcement-card">
+          <div class="card h-100 border-0 shadow-sm announcement-card rounded-4">
             <div class="card-body d-flex flex-column justify-content-between">
               <div>
-                <h5 class="card-title text-success bg-light p-2">
+                <h5 class="card-title announcement-title p-2 rounded bg-light text-success fw-semibold">
                   {{ announcement.title }}
                 </h5>
-                <p class="card-text text-muted">
+                <p class="card-text text-muted mt-2">
                   {{ truncateContent(announcement.content) }}
                 </p>
               </div>
@@ -88,15 +88,19 @@ function truncateContent(content, maxLength = 120) {
           </div>
         </div>
       </div>
+
     </div>
   </DashboardLayout>
 </template>
 
 <style scoped>
+.announcement-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
 .announcement-card:hover {
   transform: translateY(-3px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.08);
 }
 
 .card-title {
@@ -105,6 +109,12 @@ function truncateContent(content, maxLength = 120) {
 
 .card-text {
   font-size: 0.95rem;
-  line-height: 1.4;
+  line-height: 1.5;
+}
+
+.announcement-title:hover {
+  background-color: #d1e7dd !important;
+  color: #0f5132 !important;
+  cursor: default;
 }
 </style>

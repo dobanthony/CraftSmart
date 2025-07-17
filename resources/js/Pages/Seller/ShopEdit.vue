@@ -1,7 +1,7 @@
 <template>
   <SellerDashboardLayout>
     <div class="container mt-5">
-      <h2>Welcome, {{ user.name }}</h2>
+      <h2><i class="bi bi-person-circle me-2"></i>Hello,{{ user.name }}</h2>
 
       <!-- Alert if no shop exists -->
       <div v-if="!shop" class="alert alert-warning mt-3">
@@ -10,7 +10,7 @@
 
       <!-- Show shop details -->
       <div v-else class="card mt-3 p-3">
-        <h5 class="mb-3">Your Shop Details</h5>
+        <h5 class="text-success mb-3">Your Shop Details</h5>
         <p><strong>Name:</strong> {{ shop.shop_name }}</p>
         <p><strong>Description:</strong> {{ shop.shop_description }}</p>
         <p><strong>Phone Number:</strong> {{ shop.phone_number }}</p>
@@ -22,7 +22,7 @@
 
       <!-- Create / Update Form -->
       <div class="card mt-4 p-4">
-        <h5>{{ shop ? 'Update' : 'Create' }} Your Shop</h5>
+        <h5 class="text-success">{{ shop ? 'Update' : 'Create' }} Your Shop</h5>
         <form @submit.prevent="submit" enctype="multipart/form-data">
           <div class="mb-3">
             <label class="form-label">Shop Name</label>
@@ -49,7 +49,7 @@
             <input type="file" class="form-control" @change="e => form.shop_logo = e.target.files[0]" />
           </div>
 
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="btn btn-success">
             {{ shop ? 'Update Shop' : 'Create Shop' }}
           </button>
         </form>

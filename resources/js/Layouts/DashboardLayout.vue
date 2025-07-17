@@ -30,7 +30,13 @@
       </Link>
     </li>
 
-    <!-- Inbox with Badge -->
+    <!-- Cart -->
+    <li class="nav-item">
+      <Link href="/cart" class="nav-link text-white">
+        <i class="bi bi-cart-check me-2"></i> Cart
+      </Link>
+    </li>
+
     <li class="nav-item position-relative">
       <Link
         href="/user/inbox"
@@ -45,31 +51,6 @@
         >
           {{ unreadMessagesCount }}
         </span>
-      </Link>
-    </li>
-
-    <!-- Notifications with Badge -->
-    <li class="nav-item position-relative">
-      <Link
-        href="/notifications"
-        class="nav-link d-flex justify-content-between align-items-center text-white"
-        @click="store.markAllAsRead"
-      >
-        <span><i class="bi bi-bell me-2"></i> Notifications</span>
-        <span
-          v-if="store.unreadCount > 0"
-          class="badge bg-danger ms-1"
-          style="font-size: 0.75rem;"
-        >
-          {{ store.unreadCount }}
-        </span>
-      </Link>
-    </li>
-
-    <!-- Cart -->
-    <li class="nav-item">
-      <Link href="/cart" class="nav-link text-white">
-        <i class="bi bi-cart-check me-2"></i> Cart
       </Link>
     </li>
 
@@ -112,36 +93,56 @@
         <h4 class="fw-bold text-success">CraftSmart</h4>
       </div>
 
-      <!-- Profile Avatar Dropdown -->
-      <div class="position-relative">
-        <img
-          :src="user?.avatar ? `/storage/${user.avatar}` : getDefaultAvatar"
+      <!-- RIGHT: Notifications + Profile -->
+      <div class="d-flex align-items-center gap-3 position-relative">
+        <!-- 🔔 Notifications -->
+        <Link
+          href="/notifications"
+          class="text-decoration-none position-relative"
+          @click="store.markAllAsRead"
+        >
+          <i class="bi bi-bell fs-5 text-success"></i>
+          <span
+            v-if="store.unreadCount > 0"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            style="font-size: 0.7rem;"
+          >
+            {{ store.unreadCount }}
+          </span>
+        </Link>
 
-          class="avatar cursor-pointer"
-          @click="toggleProfileModal"
-        />
+        <!-- 👤 Profile Avatar -->
+        <div class="position-relative">
+          <img
+            :src="user?.avatar ? `/storage/${user.avatar}` : getDefaultAvatar"
+            class="avatar cursor-pointer"
+            @click="toggleProfileModal"
+          />
 
-        <!-- Custom Profile Modal -->
-        <div v-show="profileModalOpen" class="profile-modal shadow rounded bg-white">
-          <div class="d-flex align-items-center gap-3 p-3 border-bottom">
-            <img
-              :src="user?.avatar ? `/storage/${user.avatar}` : getDefaultAvatar"
-              class="avatar-lg"
-            />
-            <div>
-              <div class="fw-bold">Hi, {{ $page.props.auth?.user?.name ?? 'N/A' }}</div>
-              <div class="text-muted small">{{ $page.props.auth?.user?.email ?? 'N/A' }}</div>
-              <div class="text-primary small bg-light px-2 py-1 rounded d-inline">{{ $page.props.auth?.user?.role ?? 'N/A' }}</div>
-              
+          <!-- Profile Modal Dropdown -->
+          <div v-show="profileModalOpen" class="profile-modal shadow rounded bg-white">
+            <div class="d-flex align-items-center gap-3 p-3 border-bottom">
+              <img
+                :src="user?.avatar ? `/storage/${user.avatar}` : getDefaultAvatar"
+                class="avatar-lg"
+              />
+              <div>
+                <div class="fw-bold">Hi, {{ $page.props.auth?.user?.name ?? 'N/A' }}</div>
+                <div class="text-muted small">{{ $page.props.auth?.user?.email ?? 'N/A' }}</div>
+                <div class="text-primary small bg-light px-2 py-1 rounded d-inline">
+                  {{ $page.props.auth?.user?.role ?? 'N/A' }}
+                </div>
+              </div>
             </div>
-          </div>
-          <div>
-            <Link class="dropdown-item" href="/profile">My Profile</Link>
-            <Link class="dropdown-item" href="/logout" method="post" as="button">Sign Out</Link>
+            <div>
+              <Link class="dropdown-item" href="/profile">My Profile</Link>
+              <Link class="dropdown-item" href="/logout" method="post" as="button">Sign Out</Link>
+            </div>
           </div>
         </div>
       </div>
     </nav>
+
 
     <!-- Overlay for mobile sidebar -->
     <div id="overlay" :class="{ show: isMobile && sidebarOpen }" @click="closeSidebar"></div>

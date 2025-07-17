@@ -24,14 +24,14 @@
 
             <!-- 👤 User Details -->
             <div class="flex-grow-1">
-              <strong>{{ user.name }}</strong>
+              <strong class="text-success">{{ user.name }}</strong>
 
               <!-- 💬 Latest message preview -->
               <p
                 class="mb-0 small"
                 :class="{
-                  'text-primary fw-bold': !user.latest_message?.is_read && user.latest_message?.receiver_id === $page.props.auth.user.id,
-                  'text-dark': user.latest_message?.is_read || user.latest_message?.receiver_id !== $page.props.auth.user.id
+                  'text-dark fw-bold': !user.latest_message?.is_read && user.latest_message?.receiver_id === $page.props.auth.user.id,
+                  'text-muted': user.latest_message?.is_read || user.latest_message?.receiver_id !== $page.props.auth.user.id
                 }"
               >
                 <template v-if="user.latest_message">

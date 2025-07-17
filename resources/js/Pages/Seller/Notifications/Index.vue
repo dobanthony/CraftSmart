@@ -1,12 +1,12 @@
 <template>
   <SellerDashboardLayout>
-    <div class="container py-4">
-      <h2 class="mb-4">🔔 Seller Notifications</h2>
+    <div class="container">
+      <h2 class="mb-4"><i class="bi bi-bell me-2"></i> Notifications</h2>
 
       <!-- ✅ Mark All as Read Button -->
       <div class="mb-3 text-end" v-if="hasUnread">
-        <button class="btn btn-primary btn-sm" @click="markAllAsRead">
-          ✅ Mark All as Read
+        <button class="btn btn-success btn-sm" @click="markAllAsRead">
+          <i class="bi bi-check2-all me-2"></i>Mark All as Read
         </button>
       </div>
 
@@ -31,7 +31,7 @@
           <p
             :class="{
               'text-dark fw-bold': !n.read_at,
-              'text-primary fw-normal': n.read_at
+              'text-muted fw-normal': n.read_at
             }"
             class="mb-1"
           >

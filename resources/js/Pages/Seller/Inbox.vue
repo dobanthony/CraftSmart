@@ -1,7 +1,6 @@
 <template>
   <SellerDashboardLayout>
     <div class="container">
-
       <div v-if="Object.keys(groupedMessages).length">
         <div
           v-for="(conversation, userId) in groupedMessages"
@@ -15,44 +14,47 @@
             <div
               v-for="(message, index) in conversation.messages"
               :key="message.id"
-              class="d-flex mb-3"
+              class="d-flex mb-2"
               :class="message.sender.id === shop.user_id ? 'justify-content-end' : 'justify-content-start'"
             >
               <div
                 class="d-flex flex-column"
                 :class="message.sender.id === shop.user_id ? 'align-items-end' : 'align-items-start'"
               >
+                <!-- Avatar -->
                 <img
                   :src="message.sender.id === shop.user_id
                     ? `/storage/${shop.shop_logo}`
                     : (message.sender.avatar ? `/storage/${message.sender.avatar}` : '/images/default-user.png')"
-                  class="rounded-circle me-2"
-                  style="width: 40px; height: 40px; object-fit: cover;"
+                  class="rounded-circle mb-1"
+                  style="width: 32px; height: 32px; object-fit: cover;"
                 />
 
+                <!-- Message Bubble -->
                 <div
-                  class="p-2 rounded"
-                  :class="message.sender.id === shop.user_id ? 'bg-primary text-white' : 'bg-white border'"
-                  style="max-width: 70%; min-width: 80px;"
+                  class="message-bubble"
+                  :class="message.sender.id === shop.user_id ? 'bg-success text-white' : 'bg-white border text-dark'"
                 >
                   <div class="fw-bold small mb-1">
                     {{ message.sender.id === shop.user_id ? 'You' : message.sender.name }}
                   </div>
-                  <div>{{ message.message }}</div>
+                  <div class="small">{{ message.message }}</div>
                 </div>
 
-                <div class="text-muted small mt-1">
+                <!-- Timestamp & Read Status -->
+                <div class="text-muted xsmall mt-1">
                   {{ formatTime(message.created_at) }}
                   <span v-if="message.sender.id === shop.user_id">
                     • {{ message.is_read ? 'Delivered' : 'Sent' }}
                   </span>
                 </div>
 
+                <!-- Seen Indicator -->
                 <div
                   v-if="message.sender.id === shop.user_id && isLastOwnMessage(conversation.messages, index) && message.is_read"
-                  class="text-success small mt-1"
+                  class="text-success xsmall mt-0"
                 >
-                  ✔ Seen {{ formatSeenTime(message.updated_at || message.created_at) }}
+                  <i class="bi bi-check2-all me-1"></i> Seen {{ formatSeenTime(message.updated_at || message.created_at) }}
                 </div>
               </div>
             </div>
@@ -67,7 +69,7 @@
                 class="form-control me-2"
                 placeholder="Type your reply..."
               />
-              <button class="btn btn-primary">Send</button>
+              <button class="btn btn-success">Send</button>
             </div>
           </form>
         </div>
@@ -83,7 +85,7 @@
 <script setup>
 import SellerDashboardLayout from '@/Layouts/SellerDashboardLayout.vue'
 import { reactive, onMounted, onBeforeUnmount } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { defineProps } from 'vue'
 
 const { shop, messages } = defineProps({
@@ -94,7 +96,6 @@ const { shop, messages } = defineProps({
 const groupedMessages = reactive({})
 let interval = null
 
-// ✅ Group messages and preserve reply inputs
 function groupAllMessages() {
   const prevReplies = {}
 
@@ -121,7 +122,6 @@ function groupAllMessages() {
 }
 groupAllMessages()
 
-// ✅ Send a reply and reload messages
 function sendReply(conversation) {
   if (!conversation.reply.trim()) return
 
@@ -142,7 +142,6 @@ function sendReply(conversation) {
   })
 }
 
-// ✅ Utility: Format time
 function formatTime(datetime) {
   const date = new Date(datetime)
   return date.toLocaleString('en-PH', {
@@ -154,19 +153,16 @@ function formatTime(datetime) {
   })
 }
 
-// ✅ Utility: Seen time
 function formatSeenTime(datetime) {
   const date = new Date(datetime)
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
 }
 
-// ✅ Check if message is the last own sent message
 function isLastOwnMessage(messages, index) {
   const ownMessages = messages.filter(m => m.sender.id === shop.user_id)
   return ownMessages.length && messages[index].id === ownMessages.at(-1).id
 }
 
-// 🔁 Auto-refresh every 3s
 onMounted(() => {
   interval = setInterval(() => {
     router.reload({
@@ -184,7 +180,34 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+textarea.form-control {
+  border-color: #28a745; /* green */
+  box-shadow: none;
+}
+textarea.form-control:focus {
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
+}
+
 .chat-box {
   max-height: 400px;
+  overflow-y: auto;
+  padding-bottom: 1rem;
+  background-color: #f8f9fa;
+}
+
+.message-bubble {
+  padding: 0.5rem 0.75rem;
+  border-radius: 15px;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 90%;
+  min-width: 80px;
+  width: fit-content;
+}
+
+.xsmall {
+  font-size: 0.725rem;
+  line-height: 1.2;
 }
 </style>

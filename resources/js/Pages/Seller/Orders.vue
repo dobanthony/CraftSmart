@@ -1,7 +1,7 @@
 <template>
   <SellerDashboardLayout>
-    <div class="container py-4">
-      <h2 class="mb-4 text-center text-md-start">📦 Seller Orders</h2>
+    <div class="container">
+      <h2 class="mb-4 text-center text-md-start"><i class="bi bi-box-seam me-2"></i> Orders Orders</h2>
 
       <!-- 🔍 Search & Filter -->
       <div class="row gy-2 gx-2 mb-3">
@@ -10,11 +10,11 @@
             v-model="search"
             @keyup.enter="handleSearch"
             class="form-control"
-            placeholder="🔍 Search by buyer, product, or status"
+            placeholder="Search by buyer, product, or status"
           />
         </div>
         <div class="col-6 col-md-2">
-          <button class="btn btn-primary w-100" @click="handleSearch">Search</button>
+          <button class="btn btn-success w-100" @click="handleSearch">Search</button>
         </div>
         <div class="col-12 col-md-3">
           <select v-model="statusFilter" class="form-select" @change="handleSearch">
@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <!-- 📋 Table (Desktop) -->
+      <!-- 📋 Table View -->
       <div class="table-responsive d-none d-md-block">
         <table class="table table-bordered text-center align-middle">
           <thead class="table-light">
@@ -67,9 +67,9 @@
                     v-model="deliveryStatuses[order.id]"
                     @change="updateDeliveryStatus(order.id)"
                   >
-                    <option value="pending">📦 Pending</option>
-                    <option value="delivered">✅ Delivered</option>
-                    <option value="failed">❌ Failed</option>
+                    <option value="pending">Pending</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="failed">Failed</option>
                   </select>
                 </div>
                 <span v-else class="badge bg-secondary">
@@ -91,7 +91,7 @@
         </table>
       </div>
 
-      <!-- 📱 Card View (Mobile) -->
+      <!-- 📱 Mobile Card View -->
       <div class="d-block d-md-none">
         <div v-for="order in orders.data" :key="order.id" class="card mb-3 shadow-sm">
           <div class="card-body">
@@ -148,7 +148,7 @@
       <!-- ❗ Empty State -->
       <div v-if="orders.data.length === 0" class="alert alert-info">No matching orders found.</div>
 
-      <!-- 🔢 Traditional Pagination (Responsive) -->
+      <!-- 🔢 Pagination -->
       <nav v-if="orders.links.length > 3" class="mt-4">
         <ul class="pagination justify-content-center flex-wrap gap-1">
           <li
@@ -169,15 +169,16 @@
         </ul>
       </nav>
 
-
-      <!-- ✅ Toast -->
+      <!-- ✅ Toast with Bootstrap Icons -->
       <div
         v-if="toastMessage"
         class="position-fixed top-0 start-50 translate-middle-x p-3 w-100"
         style="z-index: 1055; max-width: 360px;"
       >
         <div class="toast show text-white bg-success d-flex align-items-center" role="alert">
-          <div class="toast-body">{{ toastMessage }}</div>
+          <div class="toast-body">
+            <span v-html="toastMessage"></span>
+          </div>
           <button
             type="button"
             class="btn-close btn-close-white me-2 m-auto"
@@ -190,7 +191,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { router, Link } from '@inertiajs/vue3'
 import SellerDashboardLayout from '@/Layouts/SellerDashboardLayout.vue'
 
@@ -205,12 +206,18 @@ const deliveryDates = ref({})
 const deliveryStatuses = ref({})
 const toastMessage = ref('')
 
-// Initialize delivery statuses
-props.orders.data.forEach(order => {
-  deliveryStatuses.value[order.id] = order.delivery_status || 'pending'
-})
+// ✅ Auto-populate delivery statuses
+watch(
+  () => props.orders,
+  (newOrders) => {
+    deliveryStatuses.value = {}
+    newOrders.data.forEach(order => {
+      deliveryStatuses.value[order.id] = order.delivery_status || 'pending'
+    })
+  },
+  { immediate: true }
+)
 
-// Handlers
 const handleSearch = () => {
   router.get('/seller/orders', {
     search: search.value,
@@ -221,9 +228,10 @@ const handleSearch = () => {
   })
 }
 
+// ✅ Approve Order
 const approve = (id) => {
   if (!deliveryDates.value[id]) {
-    toastMessage.value = '❗ Please select a delivery date.'
+    toastMessage.value = '<i class="bi bi-exclamation-circle-fill me-2"></i>Please select a delivery date.'
     return
   }
 
@@ -232,28 +240,58 @@ const approve = (id) => {
   }, {
     preserveScroll: true,
     onSuccess: () => {
-      toastMessage.value = '✅ Order approved.'
+      toastMessage.value = '<i class="bi bi-check-circle-fill me-2"></i>Order approved.'
     }
   })
 }
 
+// ✅ Decline Order
 const decline = (id) => {
   router.post(`/seller/orders/${id}/decline`, {}, {
     preserveScroll: true,
     onSuccess: () => {
-      toastMessage.value = '❌ Order declined.'
+      toastMessage.value = '<i class="bi bi-x-circle-fill me-2"></i>Order declined.'
     }
   })
 }
 
+// ✅ Update Delivery Status
 const updateDeliveryStatus = (id) => {
+  const status = deliveryStatuses.value[id]
+  const iconMap = {
+    pending: 'bi-box-seam',
+    delivered: 'bi-truck',
+    failed: 'bi-exclamation-triangle-fill',
+  }
+
   router.post(`/seller/orders/${id}/delivery-status`, {
-    delivery_status: deliveryStatuses.value[id],
+    delivery_status: status,
   }, {
     preserveScroll: true,
     onSuccess: () => {
-      toastMessage.value = `🚚 Delivery status updated to "${deliveryStatuses.value[id]}".`
+      toastMessage.value = `<i class="bi ${iconMap[status]} me-2"></i>Delivery status updated to "${status}".`
     }
   })
 }
 </script>
+
+<style scoped>
+input.form-control:focus {
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
+}
+.pagination .page-link {
+  color: #28a745; /* green */
+  background-color: rgb(255, 255, 255);
+  border-color: #28a745; /* green */
+}
+.pagination .page-link:hover {
+  color: white;
+  background-color: #28a745; /* green */
+  border-color: #ffffff;
+}
+.pagination .page-link:focus {
+  border-color: black;
+  box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.5); /* black with 50% opacity */
+}
+</style>

@@ -3,6 +3,7 @@
     <!-- Sidebar -->
      <nav id="sidebar" class="p-3 bg-success text-white" :class="{ show: sidebarOpen }">
         <!-- Navigation Links -->
+         <hr class="bg-secondary" />
         <ul class="nav flex-column mb-3">
 
           <!-- Dashboard -->
@@ -71,7 +72,7 @@
               @click="inboxClicked = true"
             >
               <i class="bi bi-envelope-fill me-2"></i>
-              Inbox
+              Message
               <span
                 v-if="!inboxClicked && unreadMessagesCount > 0"
                 class="badge bg-danger ms-2"
@@ -84,7 +85,7 @@
 
         </ul>
 
-        <hr class="bg-white" />
+        <hr class="bg-secondary" />
       </nav>
     <!-- Desktop Sidebar Toggle -->
     <button
