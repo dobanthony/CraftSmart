@@ -22,18 +22,18 @@
       <nav class="mb-4">
         <ol class="breadcrumb bg-light p-2 rounded mb-0">
           <li class="breadcrumb-item">
-            <Link href="/" class="text-decoration-none">🏠 Home</Link>
+            <Link href="/" class="text-decoration-none text-success">🏠 Home</Link>
           </li>
           <li class="breadcrumb-item">
             <Link
               v-if="product.shop?.id"
               :href="`/shop/${product.shop.id}/products`"
-              class="text-decoration-none"
+              class="text-decoration-none text-success"
             >
               🛍 {{ product.shop?.shop_name ?? 'Shop' }}
             </Link>
           </li>
-          <li class="breadcrumb-item active">📦 {{ product.name }}</li>
+          <li class="breadcrumb-item active text-success">📦 {{ product.name }}</li>
         </ol>
       </nav>
 
@@ -49,12 +49,12 @@
         </div>
 
         <div class="col-12 col-lg-6">
-          <h2 class="text-primary fw-bold mb-2">{{ product.name }}</h2>
+          <h2 class="text-success fw-bold mb-2">{{ product.name }}</h2>
 
           <!-- ⭐ Rating & Stats -->
           <div class="d-flex flex-wrap gap-3 mb-3">
             <div>
-              <span class="fw-bold me-1">{{ averageRating }}</span>
+              <span class="fw-bold me-1 text-success">{{ averageRating }}</span>
               <span class="text-warning">
                 <i
                   v-for="i in 5"
@@ -64,12 +64,12 @@
               </span>
             </div>
             <div>
-              <span class="fw-bold">{{ ratingsCount }}</span>
-              <span class="text-muted">Ratings</span>
+              <span class="fw-bold text-success">{{ ratingsCount }}</span>
+              <span class="text-muted"> Ratings</span>
             </div>
             <div>
-              <span class="fw-bold">{{ totalSold }}</span>
-              <span class="text-muted">Sold</span>
+              <span class="fw-bold text-success">{{ totalSold }}</span>
+              <span class="text-muted"> Sold</span>
             </div>
           </div>
 
@@ -83,14 +83,14 @@
             />
             <div>
               <small class="text-muted">Sold by:</small><br />
-              <strong>{{ product.shop?.shop_name ?? 'Unknown Shop' }}</strong>
+              <strong class="text-success">{{ product.shop?.shop_name ?? 'Unknown Shop' }}</strong>
             </div>
           </div>
 
           <!-- 👥 Follow -->
           <div class="mt-2">
             <button
-              class="btn btn-outline-info btn-sm"
+              class="btn btn-outline-success btn-sm"
               :disabled="followLoading"
               @click="toggleFollow"
             >
@@ -106,7 +106,7 @@
 
           <!-- 🔢 Quantity -->
           <div class="mb-3">
-            <label class="form-label fw-semibold">Quantity</label>
+            <label class="text-success form-label fw-semibold">Quantity</label>
             <input
               type="number"
               v-model.number="quantity"
@@ -115,7 +115,7 @@
               :max="product.stock"
             />
             <small class="text-muted">Stock: {{ product.stock }}</small><br />
-            <small class="text-warning">*Stock will be deducted after seller approval.</small>
+            <small class="text-danger">*Stock will be deducted after seller approval.</small>
           </div>
 
           <!-- 🎨 Customize / Add to Cart -->
@@ -129,8 +129,8 @@
             </button>
 
             <template v-else>
-              <button @click="addToCart" class="btn btn-outline-primary px-4">🛒 Add to Cart</button>
-              <button @click="buyNow" class="btn btn-success">Buy Now</button>
+              <button @click="addToCart" class="btn btn-outline-primary px-4"><i class="bi bi-cart-plus me-2"></i>Add to Cart</button>
+              <button @click="buyNow" class="btn btn-success"><i class="bi bi-bag me-2"></i>Buy Now</button>
             </template>
           </div>
 
@@ -204,7 +204,7 @@
 
       <!-- 🏪 Shop Info -->
       <div class="card mt-5 p-4 border-0 shadow rounded-4">
-        <h5 class="mb-4 text-primary fw-bold">🛍 About the Seller</h5>
+        <h5 class="mb-4 text-success fw-bold">🛍 About the Seller</h5>
 
         <div class="row g-4 align-items-start">
           <!-- Left Section: Logo + Shop Info -->
@@ -216,7 +216,7 @@
               style="width: 120px; height: 120px; object-fit: cover;"
             />
 
-            <h6 class="fw-bold text-dark mb-3">
+            <h6 class="fw-bold text-success mb-3">
               {{ product.shop?.shop_name ?? 'N/A' }}
             </h6>
 
@@ -225,7 +225,7 @@
               <button class="btn btn-danger" @click="goToChat">
                 <i class="bi bi-chat-dots-fill me-1"></i> Chat
               </button>
-              <button class="btn btn-outline-secondary" @click="goToShop">
+              <button class="btn btn-outline-dark" @click="goToShop">
                 <i class="bi bi-shop-window me-1"></i> View
               </button>
             </div>
@@ -236,29 +236,34 @@
             <div class="row g-3">
               <div class="col-md-6">
                 <p class="mb-2">
-                  <strong>📄 Description:</strong><br>
+                  <i class="bi bi-info-circle me-2"></i>
+                  <strong class="text-success">Description:</strong><br>
                   <span class="text-muted">{{ product.shop?.shop_description ?? 'N/A' }}</span>
                 </p>
                 <p class="mb-2">
-                  <strong>📞 Phone:</strong>
+                  <i class="bi bi-telephone me-2"></i>
+                  <strong class="text-success">Phone:</strong>
                   <span class="text-muted">{{ product.shop?.phone_number ?? 'N/A' }}</span>
                 </p>
                 <p class="mb-2">
-                  <strong>📧 Email:</strong>
+                  <i class="bi bi-envelope me-2"></i>
+                  <strong class="text-success">Email:</strong>
                   <span class="text-muted">{{ product.shop?.email_address ?? 'N/A' }}</span>
                 </p>
               </div>
               <div class="col-md-6">
                 <p class="mb-2">
-                  <strong>⭐ Ratings:</strong>
+                  <strong class="text-success me-2">⭐ Ratings:</strong>
                   <span class="text-muted">{{ product.shop?.shop_rating ?? 0 }} ({{ product.shop?.shop_rating_count ?? 0 }} reviews)</span>
                 </p>
                 <p class="mb-2">
-                  <strong>👥 Followers:</strong>
+                  <i class="bi bi-plus-circle me-2"></i>
+                  <strong class="text-success me-2">Followers:</strong>
                   <span class="text-muted">{{ followerCount }}</span>
                 </p>
                 <p class="mb-2">
-                  <strong>🏬 Shop Open Since:</strong>
+                  <i class="bi bi-shop me-2"></i>
+                  <strong class="text-success me-2">Shop Open Since:</strong>
                   <span class="text-muted">
                     {{ product.shop?.created_at ? new Date(product.shop.created_at).toLocaleDateString() : 'N/A' }}
                   </span>
@@ -271,7 +276,7 @@
 
       <!--User Ratings -->
       <div v-if="ratings.length" class="mt-5">
-        <h4 class="text-secondary mb-3">⭐ Customer Ratings & Reviews</h4>
+        <h4 class="text-success mb-3">⭐ Customer Ratings & Reviews</h4>
         <div v-for="rating in ratings" :key="rating.id" class="card my-3 p-3 border">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div class="d-flex align-items-center gap-2">
@@ -283,18 +288,18 @@
                 class="rounded-circle border"
                 style="width: 40px; height: 40px; object-fit: cover;"
               />
-              <strong>{{ rating.user?.name ?? 'Anonymous' }}</strong>
+              <strong class="text-success">{{ rating.user?.name ?? 'Anonymous' }}</strong>
             </div>
             <small class="text-muted">{{ new Date(rating.created_at).toLocaleString() }}</small>
           </div>
 
           <div class="mb-2">
-            <strong>Product:</strong>
+            <strong class="text-success">Product:</strong>
             <span v-for="i in 5" :key="'p-star-' + i" class="text-warning">
               <i :class="i <= rating.product_rating ? 'bi bi-star-fill' : 'bi bi-star'"></i>
             </span>
             <br />
-            <strong>Shop:</strong>
+            <strong class="text-success">Shop:</strong>
             <span v-for="i in 5" :key="'s-star-' + i" class="text-info">
               <i :class="i <= rating.shop_rating ? 'bi bi-star-fill' : 'bi bi-star'"></i>
             </span>

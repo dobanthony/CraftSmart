@@ -53,8 +53,8 @@ function truncateContent(content, maxLength = 120) {
       </div>
 
       <!-- 📢 Latest Announcements -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0">📢 Latest Announcements</h2>
+      <div class="d-flex justify-content-between align-items-center bg-success mb-4">
+        <div class="text-white m-2">📢 Announcements</div>
       </div>
 
       <!-- No Announcements -->
@@ -72,7 +72,7 @@ function truncateContent(content, maxLength = 120) {
           <div class="card h-100 border-0 shadow-sm announcement-card">
             <div class="card-body d-flex flex-column justify-content-between">
               <div>
-                <h5 class="card-title text-dark fw-semibold">
+                <h5 class="card-title text-success bg-light p-2">
                   {{ announcement.title }}
                 </h5>
                 <p class="card-text text-muted">
