@@ -69,7 +69,7 @@
     <!-- Cart -->
     <li class="nav-item">
       <Link href="/cart" class="nav-link text-white">
-        <i class="bi bi-cart me-2"></i> Cart
+        <i class="bi bi-cart-check me-2"></i> Cart
       </Link>
     </li>
 
@@ -236,6 +236,12 @@ function logout() {
 <style scoped>
 body {
   overflow-x: hidden;
+}
+
+#sidebar .nav-link:hover {
+  background-color: #ffffff;
+  color: #198754 !important; /* Bootstrap's success color */
+  border-radius: 0.375rem;
 }
 
 #sidebar {

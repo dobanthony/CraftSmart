@@ -1,93 +1,91 @@
 <template>
   <div>
     <!-- Sidebar -->
-    <nav id="sidebar" class="p-3 text-white" :class="{ show: sidebarOpen }">
-      <form class="mb-3">
-        <input type="text" class="form-control form-control-sm" placeholder="Search..." />
-      </form>
+     <nav id="sidebar" class="p-3 bg-success text-white" :class="{ show: sidebarOpen }">
+        <!-- Navigation Links -->
+        <ul class="nav flex-column mb-3">
 
-      <ul class="nav flex-column mb-3">
-        <li class="nav-item">
-          <Link
-            :href="route('seller.analytics')"
-            class="nav-link"
-            :class="{ active: isActive('seller.analytics') }"
-          >
-            Dashboard
-          </Link>
-        </li>
+          <!-- Dashboard -->
+          <li class="nav-item">
+            <Link
+              :href="route('seller.analytics')"
+              class="nav-link text-white d-flex align-items-center"
+              :class="{ active: isActive('seller.analytics') }"
+            >
+              <i class="bi bi-speedometer2 me-2"></i>
+              Dashboard
+            </Link>
+          </li>
 
+          <!-- Orders with badge -->
+          <li class="nav-item position-relative">
+            <Link href="/seller/orders" class="nav-link text-white d-flex align-items-center">
+              <i class="bi bi-bag-check me-2"></i>
+              Orders
+              <span
+                v-if="pendingOrdersCount > 0"
+                class="badge bg-danger ms-2"
+                style="font-size: 0.7rem;"
+              >
+                {{ pendingOrdersCount }}
+              </span>
+            </Link>
+          </li>
 
-        <!-- <li class="nav-item">
-          <Link href="/dashboard" class="nav-link" :class="{ active: page.url === '/dashboard' }">Dashboard</Link>
-        </li> -->
-        <!-- <li class="nav-item"><Link href="/seller/orders" class="nav-link">Orders</Link></li> -->
-         <li class="nav-item position-relative">
-  <Link href="/seller/orders" class="nav-link d-flex align-items-center">
-    Orders
-    <span
-      v-if="pendingOrdersCount > 0"
-      class="badge bg-danger ms-2"
-      style="font-size: 0.7rem;"
-    >
-      {{ pendingOrdersCount }}
-    </span>
-  </Link>
-</li>
+          <!-- Products -->
+          <li class="nav-item">
+            <Link :href="route('seller.products.index')" class="nav-link text-white d-flex align-items-center">
+              <i class="bi bi-box-seam me-2"></i>
+              Products
+            </Link>
+          </li>
 
-        <li class="nav-item"><Link :href="route('seller.products.index')" class="nav-link">Products</Link></li>
-        <li class="nav-item"><Link :href="route('seller.shop')" class="nav-link">My Shop</Link></li>
+          <!-- My Shop -->
+          <li class="nav-item">
+            <Link :href="route('seller.shop')" class="nav-link text-white d-flex align-items-center">
+              <i class="bi bi-shop me-2"></i>
+              My Shop
+            </Link>
+          </li>
 
+          <!-- Notifications -->
+          <li class="nav-item position-relative">
+            <Link href="/seller/notifications" class="nav-link text-white d-flex align-items-center">
+              <i class="bi bi-bell-fill me-2"></i>
+              Notifications
+              <span
+                v-if="store.unreadCount > 0"
+                class="badge bg-danger ms-2"
+                style="font-size: 0.7rem;"
+              >
+                {{ store.unreadCount }}
+              </span>
+            </Link>
+          </li>
 
-        <Link href="/seller/notifications" class="nav-link d-flex align-items-center">
-  🔔 Notifications
-  <span
-    v-if="store.unreadCount > 0"
-    class="badge bg-danger ms-1"
-    style="font-size: 0.7rem;"
-  >
-    {{ store.unreadCount }}
-  </span>
-</Link>
+          <!-- Inbox -->
+          <li class="nav-item position-relative">
+            <Link
+              href="/seller/inbox"
+              class="nav-link text-white d-flex align-items-center"
+              @click="inboxClicked = true"
+            >
+              <i class="bi bi-envelope-fill me-2"></i>
+              Inbox
+              <span
+                v-if="!inboxClicked && unreadMessagesCount > 0"
+                class="badge bg-danger ms-2"
+                style="font-size: 0.7rem;"
+              >
+                {{ unreadMessagesCount }}
+              </span>
+            </Link>
+          </li>
 
+        </ul>
 
-
-      <!-- 📨 Inbox Link -->
-      <!-- <Link
-        href="/seller/inbox"
-        class="nav-link text-white"
-      >
-        📩 Inbox
-      </Link> -->
-
-
-      <li class="nav-item position-relative">
-  <Link
-    href="/seller/inbox"
-    class="nav-link d-flex align-items-center text-white"
-    @click="inboxClicked = true"
-  >
-    📩 Inbox
-    <span
-      v-if="!inboxClicked && unreadMessagesCount > 0"
-      class="badge bg-danger ms-2"
-      style="font-size: 0.7rem;"
-    >
-      {{ unreadMessagesCount }}
-    </span>
-  </Link>
-</li>
-
-
-
-
-
-
-      
-      </ul>
-      <hr class="bg-secondary" />
-    </nav>
-
+        <hr class="bg-white" />
+      </nav>
     <!-- Desktop Sidebar Toggle -->
     <button
       id="hideSidebarBtn"
@@ -259,6 +257,11 @@ function logout() {
 <style scoped>
 body {
   overflow-x: hidden;
+}
+#sidebar .nav-link:hover {
+  background-color: #ffffff;
+  color: #198754 !important; /* Bootstrap's success color */
+  border-radius: 0.375rem;
 }
 
 #sidebar {

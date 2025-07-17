@@ -5,7 +5,7 @@
       <h4>Notifications</h4>
       <button
         v-if="notifications.length > 0"
-        class="btn btn-sm btn-dark"
+        class="btn btn-sm btn-success"
         @click="markAllAsRead"
       >
         Mark All as Read
@@ -22,8 +22,8 @@
         :key="notification.id"
         class="list-group-item list-group-item-action"
         :class="{
-          'bg-white text-muted fw-bold': !notification.read_at,
-          'bg-white text-dark fw-bold': notification.read_at
+          'bg-white text-success fw-bold': !notification.read_at,
+          'bg-white text-muted fw-bold': notification.read_at
         }"
         @click="markAsRead(notification.id, notification.data.order_id)"
         style="cursor: pointer"

@@ -3,24 +3,24 @@
     <div class="container py-4">
       <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
-          <h2 class="mb-4 text-center text-md-start">📨 Apply to Become a Seller</h2>
+          <h2 class="mb-4 text-center text-md-start"><i class="bi bi-envelope-paper me-2"></i>Apply to Become a Seller</h2>
 
           <!-- 🔒 Already Applied -->
           <div v-if="user.seller_status === 'pending' || user.seller_status === 'approved'">
             <div class="bg-light border p-4 rounded mb-3">
-              <p class="mb-1"><strong>Name:</strong> {{ user.name }}</p>
-              <p class="mb-1"><strong>Email:</strong> {{ user.email }}</p>
-              <p class="mb-0"><strong>Application Reason:</strong><br /> {{ user.application_reason }}</p>
+              <p class="text-success mb-1"><strong class="text-dark">Name:</strong> {{ user.name }}</p>
+              <p class="text-success mb-1"><strong class="text-dark">Email:</strong> {{ user.email }}</p>
+              <p class="text-success"><strong class="text-dark">Application Reason:</strong><br /> {{ user.application_reason }}</p>
             </div>
 
             <div v-if="user.seller_status === 'pending'" class="alert alert-warning">
-              🔒 Your application is currently <strong>Pending</strong>.
+              <i class="bi bi-person-lock me-2"></i>Your application is currently <strong>Pending</strong>.
             </div>
 
             <div v-else-if="user.seller_status === 'approved'" class="alert alert-success">
-              ✅ <strong>Your application has been approved!</strong>
+              <strong><i class="bi bi-unlock me-2"></i>Your application has been approved!</strong>
               <br />
-              🔁 Please logout and log back in to access the seller dashboard.
+              <i class="bi bi-box-arrow-right me-2"></i>Please logout and log back in to access the seller dashboard.
               <br />
               <button class="btn btn-outline-dark mt-3 w-100 w-md-auto" @click.prevent="logout">
                 Logout
@@ -67,7 +67,7 @@
                 />
               </div>
 
-              <button class="btn btn-primary w-100" :disabled="form.processing">
+              <button class="btn btn-success w-100" :disabled="form.processing">
                 Submit Application
               </button>
             </form>
@@ -145,3 +145,18 @@ function logout() {
   router.post('/logout')
 }
 </script>
+
+<style scoped>
+input.form-control:focus {
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
+}
+textarea.form-control {
+  border-color: #28a745; /* green */
+  box-shadow: none;
+}
+textarea.form-control:focus {
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
+}
+</style>

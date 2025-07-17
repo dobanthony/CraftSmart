@@ -12,7 +12,7 @@
           />
         </div>
         <div class="col-6 col-md-3 col-lg-2">
-          <button class="btn btn-dark w-100" @click="handleSearch">Search</button>
+          <button class="btn btn-success w-100" @click="handleSearch">Search</button>
         </div>
       </div>
 
@@ -27,7 +27,7 @@
       <!-- ✅ Desktop View -->
       <div v-if="!isMobile" class="table-responsive">
         <table class="table table-hover align-middle text-center">
-          <thead class="table-dark">
+          <thead class="table-success">
             <tr>
               <th>🖼️</th>
               <th>Product</th>
@@ -86,7 +86,7 @@
                 <button
                   v-if="!order.received_order && order.status !== 'canceled'"
                   @click="$inertia.visit(`/receipt/${order.id}`)"
-                  class="btn btn-sm btn-outline-primary"
+                  class="btn btn-sm btn-outline-success"
                 >
                   View
                 </button>
@@ -258,8 +258,8 @@ const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
 
 <style scoped>
 input.form-control:focus {
-  border-color: #000;
-  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
 }
 .pagination .page-link {
   color: rgb(0, 0, 0);
@@ -268,7 +268,7 @@ input.form-control:focus {
 }
 .pagination .page-link:hover {
   color: white;
-  background-color: #333;
+  background-color: #28a745; /* green */
   border-color: #ffffff;
 }
 .pagination .page-link:focus {

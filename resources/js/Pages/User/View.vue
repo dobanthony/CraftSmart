@@ -1,7 +1,7 @@
 <template>
   <DashboardLayout>
     <div class="container">
-      <h2 class="mb-4 text-success">Products</h2>
+      <h2 class="mb-4">Products</h2>
 
       <!-- 🔍 Search Form -->
       <form @submit.prevent="searchProducts" class="row g-2 mb-4">

@@ -1,11 +1,11 @@
 <template>
   <SellerDashboardLayout>
-    <div class="container py-4">
+    <div class="container">
       <!-- IF SELLER HAS A SHOP -->
       <div v-if="shop && shop.id">
         <!-- Header -->
+         <h2 class="fw-bold mb-2 text-dark"><i class="bi bi-bar-chart-line me-2"></i>Analytics</h2>
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
-          <h2 class="fw-bold m-0">📊 Seller Analytics</h2>
           <select class="form-select w-100 w-md-auto" v-model="selectedRange" @change="applyFilter">
             <option value="week">This Week</option>
             <option value="month">This Month</option>
@@ -16,10 +16,10 @@
         <!-- Stat Cards -->
         <div class="row mb-4">
           <div class="col-12 col-sm-6 col-md-3 mb-3" v-for="(value, key) in stats" :key="key">
-            <div class="card shadow border-primary h-100">
+            <div class="card shadow border-success h-100">
               <div class="card-body text-center">
                 <h6 class="text-muted text-capitalize">{{ key.replace(/([A-Z])/g, ' $1') }}</h6>
-                <h4 class="text-primary">₱ {{ value }}</h4>
+                <h4 class="text-success">₱ {{ value }}</h4>
               </div>
             </div>
           </div>

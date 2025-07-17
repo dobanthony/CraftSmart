@@ -49,7 +49,7 @@
         </div>
 
         <div class="col-12 col-lg-6">
-          <h2 class="text-success fw-bold mb-2">{{ product.name }}</h2>
+          <h2 class="text-dark fw-bold mb-2">{{ product.name }}</h2>
 
           <!-- ⭐ Rating & Stats -->
           <div class="d-flex flex-wrap gap-3 mb-3">
@@ -276,7 +276,7 @@
 
       <!--User Ratings -->
       <div v-if="ratings.length" class="mt-5">
-        <h4 class="text-success mb-3">⭐ Customer Ratings & Reviews</h4>
+        <h4 class="text-dark mb-3">⭐ Customer Ratings & Reviews</h4>
         <div v-for="rating in ratings" :key="rating.id" class="card my-3 p-3 border">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div class="d-flex align-items-center gap-2">
@@ -288,7 +288,7 @@
                 class="rounded-circle border"
                 style="width: 40px; height: 40px; object-fit: cover;"
               />
-              <strong class="text-success">{{ rating.user?.name ?? 'Anonymous' }}</strong>
+              <strong class="text-dark">{{ rating.user?.name ?? 'Anonymous' }}</strong>
             </div>
             <small class="text-muted">{{ new Date(rating.created_at).toLocaleString() }}</small>
           </div>

@@ -1,62 +1,67 @@
 <template>
   <DashboardLayout>
   <div class="container">
-    <h4 class="mb-4">💬{{ shop.shop_name }}</h4>
+    <h4 class="mb-4 text-dark"><i class="bi bi-envelope me-2"></i>{{ shop.shop_name }}</h4>
 
     <!-- Chat Messages -->
-    <div class="chat-box mb-3 p-3 border rounded bg-light">
-      <div v-for="(msg, index) in messages" :key="msg.id" class="mb-3">
+    <div
+        ref="chatBox"
+        class="chat-box mb-3 p-3 border rounded bg-light"
+        style="max-height: 400px; overflow-y: auto;"
+    >
+    <div v-for="(msg, index) in messages" :key="msg.id" class="mb-2">
+      <div
+        class="d-flex"
+        :class="msg.sender.id === shop.user_id ? 'justify-content-start' : 'justify-content-end'"
+      >
         <div
-          class="d-flex"
-          :class="msg.sender.id === shop.user_id ? 'justify-content-start' : 'justify-content-end'"
+          class="d-flex flex-column"
+          :class="msg.sender.id === shop.user_id ? 'align-items-start' : 'align-items-end'"
         >
+          <!-- Avatar -->
+          <img
+            :src="msg.sender.id === shop.user_id
+              ? `/storage/${shop.shop_logo}`
+              : msg.sender.avatar
+                ? `/storage/${msg.sender.avatar}`
+                : '/images/default-user.png'"
+            alt="Profile"
+            class="rounded-circle me-2"
+            style="width: 40px; height: 40px; object-fit: cover;"
+          />
+
+          <!-- Message Bubble -->
           <div
-            class="d-flex flex-column"
-            :class="msg.sender.id === shop.user_id ? 'align-items-start' : 'align-items-end'"
+            class="p-2 rounded"
+            :class="msg.sender.id === shop.user_id ? 'bg-white' : 'bg-success text-white'"
+            style="max-width: 70%; min-width: 80px;"
           >
-            <!-- Avatar -->
-            <img
-              :src="msg.sender.id === shop.user_id
-                ? `/storage/${shop.shop_logo}`
-                : msg.sender.avatar
-                  ? `/storage/${msg.sender.avatar}`
-                  : '/images/default-user.png'"
-              alt="Profile"
-              class="rounded-circle me-2"
-              style="width: 40px; height: 40px; object-fit: cover;"
-            />
-
-            <!-- Message Bubble -->
-            <div
-              class="p-2 rounded"
-              :class="msg.sender.id === shop.user_id ? 'bg-white' : 'bg-primary text-white'"
-              style="max-width: 70%; min-width: 80px;"
-            >
-              <div class="fw-bold small mb-1">
-                {{ msg.sender.id === shop.user_id ? shop.shop_name : msg.sender.name }}
-              </div>
-              <div>{{ msg.message }}</div>
+            <div class="fw-bold small mb-1">
+              {{ msg.sender.id === shop.user_id ? shop.shop_name : msg.sender.name }}
             </div>
+            <div>{{ msg.message }}</div>
+          </div>
 
-            <!-- Time + Status -->
-            <div class="text-muted small mt-1">
-              {{ formatTime(msg.created_at) }}
-              <span v-if="msg.sender.id !== shop.user_id">
-                • {{ msg.is_read ? 'Delivered' : 'Sent' }}
-              </span>
-            </div>
+          <!-- Time + Status -->
+          <div class="text-muted small mt-1">
+            {{ formatTime(msg.created_at) }}
+            <span v-if="msg.sender.id !== shop.user_id">
+              • {{ msg.is_read ? 'Delivered' : 'Sent' }}
+            </span>
+          </div>
 
-            <!-- ✅ Seen Time -->
-            <div
-              v-if="msg.sender.id !== shop.user_id && isLastOwnMessage(index) && msg.is_read"
-              class="text-success small mt-1"
-            >
-              ✔ Seen {{ formatSeenTime(msg.updated_at || msg.created_at) }}
-            </div>
+          <!-- ✅ Seen Time -->
+          <div
+            v-if="msg.sender.id !== shop.user_id && isLastOwnMessage(index) && msg.is_read"
+            class="text-success small mt-1"
+          >
+            <i class="bi bi-check-all me-2"></i>Seen {{ formatSeenTime(msg.updated_at || msg.created_at) }}
           </div>
         </div>
       </div>
     </div>
+  </div>
+
 
     <!-- Send New Message -->
     <form @submit.prevent="sendMessage">
@@ -80,6 +85,7 @@ import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { defineProps } from 'vue'
+import { onUpdated } from 'vue'
 
 const props = defineProps({
   shop: Object,
@@ -89,6 +95,14 @@ const props = defineProps({
 const userId = usePage().props.auth.user.id
 const newMessage = ref('')
 let interval = null
+const chatBox = ref(null)
+
+onUpdated(() => {
+  if (chatBox.value) {
+    chatBox.value.scrollTop = chatBox.value.scrollHeight
+  }
+})
+
 
 const sendMessage = () => {
   router.post('/messages/send', {
@@ -136,6 +150,14 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+textarea.form-control {
+  border-color: #28a745; /* green */
+  box-shadow: none;
+}
+textarea.form-control:focus {
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
+}
 .chat-box {
   max-height: 500px;
   overflow-y: auto;

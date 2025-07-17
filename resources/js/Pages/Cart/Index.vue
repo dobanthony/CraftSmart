@@ -1,7 +1,7 @@
 <template>
   <DashboardLayout>
     <div class="container">
-      <h1 class="mb-4">🛒 My Cart</h1>
+      <h1 class="mb-4"><i class="bi bi-cart-check me-2"></i>My Cart</h1>
 
       <!-- 🔔 Empty Cart -->
       <div v-if="cartItems.length === 0" class="alert alert-info text-center">
@@ -11,8 +11,8 @@
       <!-- 📦 Cart Table (Desktop) -->
       <div v-else>
         <div class="d-none d-md-block table-responsive">
-          <table class="table table-bordered align-middle">
-            <thead class="table-light">
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-success">
               <tr>
                 <th style="width: 40px;">
                   <input type="checkbox" @change="toggleAllSelection" :checked="allSelected" />
@@ -43,7 +43,7 @@
                 <td>₱{{ (item.quantity * Number(item.product?.price ?? 0)).toFixed(2) }}</td>
                 <td class="text-center">
                   <button @click="removeFromCart(item)" class="btn btn-danger btn-sm">
-                    Remove
+                    <i class="bi bi-trash"></i>
                   </button>
                 </td>
               </tr>
@@ -66,7 +66,7 @@
                   <strong class="text-break">{{ item.product?.name ?? 'Unknown Product' }}</strong>
                 </div>
                 <button @click="removeFromCart(item)" class="btn btn-sm btn-outline-danger">
-                  🗑
+                  <i class="bi bi-trash"></i>
                 </button>
               </div>
 
@@ -109,7 +109,7 @@
             :disabled="selectedCartIds.length === 0"
             @click="buyNow"
           >
-            🛍 Buy Now
+            <i class="bi bi-bag me-2"></i>Buy Now
           </button>
         </div>
       </div>

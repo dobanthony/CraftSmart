@@ -1,7 +1,7 @@
 <template>
   <DashboardLayout>
     <div class="container py-4">
-      <h3>📨 Your Conversations</h3>
+      <h4 class="text-dark">Conversations</h4>
 
       <div v-if="shops.length">
         <Link
@@ -24,7 +24,7 @@
 
             <!-- 🛍️ Shop Details -->
             <div class="flex-grow-1">
-              <strong>{{ shop.shop_name }}</strong>
+              <strong class="text-success">{{ shop.shop_name }}</strong>
 
               <!-- 💬 Latest message preview -->
               <p
