@@ -8,7 +8,7 @@
           <!-- 🔒 Already Applied -->
           <div v-if="user.seller_status === 'pending' || user.seller_status === 'approved'">
             <div class="bg-light border p-4 rounded mb-3">
-              <p class="text-success mb-1"><strong class="text-dark">Name:</strong> {{ user.name }}</p>
+              <p class="text-success mb-1"><strong class="text-dark">Name:</strong> {{ user.first_name }}</p>
               <p class="text-success mb-1"><strong class="text-dark">Email:</strong> {{ user.email }}</p>
               <p class="text-success"><strong class="text-dark">Application Reason:</strong><br /> {{ user.application_reason }}</p>
             </div>
@@ -38,7 +38,7 @@
                   id="name"
                   type="text"
                   class="form-control"
-                  :value="user.name"
+                  :value="user.first_name + ' ' + user.last_name"
                   readonly
                 />
               </div>
