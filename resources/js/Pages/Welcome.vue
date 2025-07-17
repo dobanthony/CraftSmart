@@ -45,7 +45,7 @@
       </section>
 
       <!-- Call to Action -->
-      <section class="py-5 bg-dark text-white text-center">
+      <section class="py-5 bg-success text-white text-center">
         <div class="container">
           <h2 class="h3 fw-bold">Join Thousands of Happy Customers</h2>
           <p class="lead mb-4">Start your journey with us today.</p>

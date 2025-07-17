@@ -65,9 +65,6 @@
 
   <hr class="bg-secondary" />
 </nav>
-
-
-
     <!-- Desktop Sidebar Toggle -->
     <button
       id="hideSidebarBtn"
@@ -127,7 +124,7 @@
                 class="avatar-lg"
               />
               <div>
-                <div class="fw-bold">Hi, {{ $page.props.auth?.user?.name ?? 'N/A' }}</div>
+                <div class="fw-bold">Hi, {{ $page.props.auth?.user?.first_name ?? 'N/A' }}</div>
                 <div class="text-muted small">{{ $page.props.auth?.user?.email ?? 'N/A' }}</div>
                 <div class="text-primary small bg-light px-2 py-1 rounded d-inline">
                   {{ $page.props.auth?.user?.role ?? 'N/A' }}
@@ -183,12 +180,8 @@ onMounted(() => {
   }
 })
 
-
-
-// const page = usePage()
 const user = page.props.auth?.user
 const getDefaultAvatar = '/images/default-avatar.jpg'
-
 
 
 

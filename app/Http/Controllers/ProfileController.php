@@ -78,28 +78,53 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
+    // public function updateAvatar(Request $request)
+    // {
+    //     $request->validate([
+    //         'avatar' => 'required|image|max:2048',
+    //     ]);
+
+    //     /** @var \App\Models\User $user */
+    //     $user = Auth::user();
+
+    //      // Delete old avatar if it exists
+    //     if ($user->avatar && Storage::exists('public/' . $user->avatar)) {
+    //         Storage::delete('public/' . $user->avatar);
+    //     }
+
+    //     // store avatar in /storage/app/public/avatars
+    //     $path = $request->file('avatar')->store('avatars', 'public');
+
+    //     // save to user
+    //     $user->avatar = $path;
+    //     $user->save();
+
+    //     return back()->with('success', 'Profile photo updated.');
+    // }
     public function updateAvatar(Request $request)
-    {
-        $request->validate([
-            'avatar' => 'required|image|max:2048',
-        ]);
+{
+    $request->validate([
+        'avatar' => 'required|image|max:2048',
+    ]);
 
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
+    $user = Auth::user();
 
-         // Delete old avatar if it exists
-        if ($user->avatar && Storage::exists('public/' . $user->avatar)) {
-            Storage::delete('public/' . $user->avatar);
-        }
-
-        // store avatar in /storage/app/public/avatars
-        $path = $request->file('avatar')->store('avatars', 'public');
-
-        // save to user
-        $user->avatar = $path;
-        $user->save();
-
-        return back()->with('success', 'Profile photo updated.');
+    // Delete old avatar if exists
+    if ($user->avatar && Storage::exists('public/' . $user->avatar)) {
+        Storage::delete('public/' . $user->avatar);
     }
+
+    // Store new avatar
+    $path = $request->file('avatar')->store('avatars', 'public');
+
+    $user->avatar = $path;
+    $user->save();
+
+    return response()->json([
+        'message' => 'Profile photo updated.',
+        'avatar' => $path,
+    ]);
+}
+
 
 }

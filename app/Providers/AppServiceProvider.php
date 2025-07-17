@@ -21,46 +21,6 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    // public function boot(): void
-    // {
-    //      Inertia::share('auth', function () {
-    //         return [
-    //             'user' => Auth::user(),
-    //         ];
-    //     });
-    //     Vite::prefetch(concurrency: 3);
-
-    // }
-
-    // public function boot(): void
-    // {
-    //     // Share auth user and notifications together
-    //     Inertia::share([
-    //         'auth' => function () {
-    //             return [
-    //                 'user' => Auth::user(),
-    //             ];
-    //         },
-    //         'notifications' => function () {
-    //             if (Auth::check()) {
-    //                 return Auth::user()->notifications->map(function ($n) {
-    //                     return [
-    //                         'id' => $n->id,
-    //                         'message' => $n->data['message'] ?? '', // ✅ Required for Vue
-    //                         'read_at' => $n->read_at,
-    //                         'created_at' => $n->created_at->diffForHumans(),
-    //                     ];
-    //                 });
-    //             }
-
-    //             return [];
-    //             },
-
-    //                 ]);
-
-    //                 // Optional Vite prefetching
-    //                 Vite::prefetch(concurrency: 3);
-    // }
     public function boot(): void
     {
         Inertia::share([

@@ -1,42 +1,8 @@
-<script setup>
-import DashboardLayout from '@/Layouts/DashboardLayout.vue'
-import { Head, Link } from '@inertiajs/vue3'
-import { defineProps } from 'vue'
-
-const props = defineProps({
-  announcements: {
-    type: Array,
-    default: () => [],
-  }
-})
-
-// Format date to "June 30, 2025, 5:30 PM"
-function formatDate(date) {
-  const d = new Date(date)
-  return d.toLocaleString('en-PH', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  })
-}
-
-// Truncate long content
-function truncateContent(content, maxLength = 120) {
-  if (content.length <= maxLength) return content
-  return content.slice(0, maxLength) + '...'
-}
-</script>
-
 <template>
   <Head title="Dashboard" />
 
   <DashboardLayout>
-    <div class="container py-5">
-      <h2 class="text-dark fw-bold mb-4">👤 User Dashboard</h2>
-
+    <div class="container">
       <!-- ✅ Card: Update Profile -->
       <div class="card shadow-sm border-0 mb-5 rounded-4">
         <div class="card-header bg-success text-white rounded-top-4">
@@ -54,7 +20,7 @@ function truncateContent(content, maxLength = 120) {
 
       <!-- 📢 Announcements Header -->
       <div class="d-flex justify-content-between align-items-center bg-success text-white p-2 rounded mb-4">
-        <strong class="ms-2">📢 Latest Announcements</strong>
+        <strong class="ms-2"><i class="bi bi-megaphone me-2"></i> Latest Announcements</strong>
       </div>
 
       <!-- No Announcements -->
@@ -92,6 +58,38 @@ function truncateContent(content, maxLength = 120) {
     </div>
   </DashboardLayout>
 </template>
+
+<script setup>
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
+import { Head, Link } from '@inertiajs/vue3'
+import { defineProps } from 'vue'
+
+const props = defineProps({
+  announcements: {
+    type: Array,
+    default: () => [],
+  }
+})
+
+// Format date to "June 30, 2025, 5:30 PM"
+function formatDate(date) {
+  const d = new Date(date)
+  return d.toLocaleString('en-PH', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  })
+}
+
+// Truncate long content
+function truncateContent(content, maxLength = 120) {
+  if (content.length <= maxLength) return content
+  return content.slice(0, maxLength) + '...'
+}
+</script>
 
 <style scoped>
 .announcement-card {
