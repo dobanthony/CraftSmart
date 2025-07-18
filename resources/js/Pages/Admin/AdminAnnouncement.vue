@@ -1,7 +1,7 @@
 <template>
 <AdminDashboardLayout>
-  <div class="container py-5">
-    <h1 class="mb-4">📢 Admin Announcements</h1>
+  <div class="container">
+    <h4 class="mb-4"><i class="bi bi-megaphone text-success me-2"></i> Announcements</h4>
 
     <!-- Create/Update Announcement Form -->
     <form @submit.prevent="submitForm" class="card card-body shadow-sm mb-5">
@@ -27,7 +27,7 @@
             Submitting...
           </span>
           <span v-else>
-            {{ form.id ? 'Update' : 'Create' }} Announcement
+            {{ form.id ? 'Update' : 'Create' }}
           </span>
         </button>
         <button
@@ -52,7 +52,7 @@
         <div class="me-3">
           <h5 class="mb-1">{{ announcement.title }}</h5>
           <p class="mb-1 text-muted">{{ announcement.content }}</p>
-          <small class="text-secondary">🕒 {{ formatDate(announcement.created_at) }}</small>
+          <small class="text-secondary"><i class="bi bi-clock text-success me-1"></i> {{ formatDate(announcement.created_at) }}</small>
         </div>
         <div class="btn-group align-self-center">
           <button class="btn btn-sm btn-outline-primary" @click="edit(announcement)">Edit</button>

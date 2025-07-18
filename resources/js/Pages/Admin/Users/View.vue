@@ -1,8 +1,8 @@
 <template>
   <AdminDashboardLayout>
-    <div class="container py-4">
+    <div class="container">
       <!-- Page Title -->
-      <h2 class="mb-4 fw-bold">👤 Profile Overview</h2>
+      <h4 class="mb-4 fw-bold"><i class="bi bi-person-circle"></i> Profile Overview</h4>
 
       <!-- Profile Card -->
       <div class="card shadow-sm p-4 border-0">
@@ -30,26 +30,26 @@
         <div class="border-top pt-3">
           <!-- Email -->
           <div class="mb-3">
-            <small class="text-muted">📧 Email</small>
-            <p class="mb-0">{{ user.email }}</p>
+            <small class="text-muted"><i class="bi bi-envelope-at text-success"></i> Email</small>
+            <p class="mb-0 text-dark">{{ user.email }}</p>
           </div>
 
           <!-- Phone -->
           <div class="mb-3">
-            <small class="text-muted">📱 Phone Number</small>
-            <p class="mb-0">{{ user.phone || '—' }}</p>
+            <small class="text-muted"><i class="bi bi-telephone text-success"></i> Phone Number</small>
+            <p class="mb-0 text-dark">{{ user.phone || '—' }}</p>
           </div>
 
           <!-- Address -->
           <div class="mb-3">
-            <small class="text-muted">🏠 Address</small>
-            <p class="mb-0">{{ user.address || '—' }}</p>
+            <small class="text-muted"><i class="bi bi-house text-success"></i> Address</small>
+            <p class="mb-0 text-dark">{{ user.address || '—' }}</p>
           </div>
 
           <!-- Date of Birth -->
           <div class="mb-3">
-            <small class="text-muted">🎂 Date of Birth</small>
-            <p class="mb-0">
+            <small class="text-muted"><i class="bi bi-cake2 text-success"></i> Date of Birth</small>
+            <p class="mb-0 text-dark">
               {{ user.dob ? formatDate(user.dob) : '—' }}
             </p>
           </div>
@@ -57,7 +57,7 @@
           <!-- Social Links -->
           <div class="mb-3" v-if="user.social_links?.facebook">
             <small class="text-muted">🔗 Facebook</small>
-            <p class="mb-0">
+            <p class="mb-0 text-dark">
               <a
                 :href="user.social_links.facebook"
                 class="text-decoration-none"
@@ -70,7 +70,7 @@
 
           <div class="mb-3" v-if="user.social_links?.twitter">
             <small class="text-muted">🔗 Twitter</small>
-            <p class="mb-0">
+            <p class="mb-0 text-dark">
               <a
                 :href="user.social_links.twitter"
                 class="text-decoration-none"
@@ -83,16 +83,16 @@
 
           <!-- Registration Date -->
           <div class="mb-3">
-            <small class="text-muted">🗓️ Registered At</small>
-            <p class="mb-0">{{ formatDate(user.created_at) }}</p>
+            <small class="text-muted"><i class="bi bi-calendar3 text-success"></i> Registered At</small>
+            <p class="mb-0 text-dark">{{ formatDate(user.created_at) }}</p>
           </div>
         </div>
       </div>
 
       <!-- Back Button -->
       <div class="mt-4">
-        <Link href="/admin/users" class="btn btn-outline-secondary">
-          ← Back to Users
+        <Link href="/admin/users" class="btn btn-success">
+          <i class="bi bi-backspace text-white me-2"></i>Back
         </Link>
       </div>
     </div>

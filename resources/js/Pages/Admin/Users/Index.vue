@@ -89,9 +89,9 @@ function confirmDelete() {
             </td>
             <td>{{ formatDate(user.created_at) }}</td>
             <td class="text-center">
-              <Link :href="`/admin/users/${user.id}`" class="btn btn-sm btn-outline-info me-1">View</Link>
-              <Link :href="`/admin/users/${user.id}/edit`" class="btn btn-sm btn-outline-primary me-1">Edit</Link>
-              <button @click="openDeleteModal(user)" class="btn btn-sm btn-outline-danger">Delete</button>
+              <Link :href="`/admin/users/${user.id}`" class="btn btn-sm btn-success me-1"><i class="bi bi-eye me-1 text-white"></i>View</Link>
+              <Link :href="`/admin/users/${user.id}/edit`" class="btn btn-sm btn-primary me-1"><i class="bi bi-pencil-square me-1"></i>Edit</Link>
+              <button @click="openDeleteModal(user)" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3 me-1"></i>Delete</button>
             </td>
           </tr>
         </tbody>
