@@ -8,7 +8,7 @@
           <p class="lead text-muted">
             Discover quality products, support local sellers, and enjoy a seamless shopping experience.
           </p>
-          <Link href="/getStarted" class="btn btn-dark btn-lg mt-3">
+          <Link href="/getStarted" class="btn btn-success btn-lg mt-3">
             Get Started
           </Link>
         </div>
@@ -20,21 +20,21 @@
           <h2 class="h3 fw-semibold text-dark text-center mb-4">Why Shop With Us?</h2>
           <div class="row text-center">
             <div class="col-md-4 mb-4 feature-card">
-              <i class="bi bi-truck display-4 text-dark"></i>
+              <i class="bi bi-truck display-4 text-success"></i>
               <h5 class="fw-bold mt-3 text-dark">Fast & Reliable Delivery</h5>
               <p class="text-muted">
                 Receive your orders quickly with nationwide delivery services.
               </p>
             </div>
             <div class="col-md-4 mb-4 feature-card">
-              <i class="bi bi-shield-lock display-4 text-dark"></i>
+              <i class="bi bi-shield-lock display-4 text-success"></i>
               <h5 class="fw-bold mt-3 text-dark">Secure Shopping</h5>
               <p class="text-muted">
                 Shop with confidence using secure payment methods and encrypted checkout.
               </p>
             </div>
             <div class="col-md-4 mb-4 feature-card">
-              <i class="bi bi-bag-heart display-4 text-dark"></i>
+              <i class="bi bi-bag-heart display-4 text-success"></i>
               <h5 class="fw-bold mt-3 text-dark">Support Local Sellers</h5>
               <p class="text-muted">
                 Discover authentic products from artisans and small businesses in the Philippines.
