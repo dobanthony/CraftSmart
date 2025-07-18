@@ -1,7 +1,9 @@
 <template>
   <AdminDashboardLayout>
-    <div class="container py-4">
-      <h2 class="mb-4 text-primary">📊 Admin Dashboard</h2>
+    <div class="container py-2">
+      <h2 class="mb-4 text-dark">
+        <i class="bi bi-speedometer2 me-1 text-success"></i> Admin Dashboard
+      </h2>
 
       <!-- 🔢 Top Metric Cards -->
       <div class="row g-4 mb-4">
@@ -10,9 +12,11 @@
           v-for="card in cards"
           :key="card.label"
         >
-          <div class="card shadow border-start border-4 h-100" :class="card.border">
+          <div class="card shadow border-start border-1 h-100" :class="card.border">
             <div class="card-body d-flex align-items-center">
-              <div class="display-5 me-3">{{ card.icon }}</div>
+              <div class="display-5 me-3">
+                <i :class="[card.icon, card.text]"></i>
+              </div>
               <div>
                 <h6 class="text-muted mb-1">{{ card.label }}</h6>
                 <h4 class="fw-bold mb-0 text-dark">{{ card.count }}</h4>
@@ -24,7 +28,9 @@
 
       <!-- 📅 Chart Filter -->
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">📊 Chart Filters</h5>
+        <h5 class="mb-0">
+          <i class="bi bi-graph-up-arrow me-1 text-success"></i> Chart Filters
+        </h5>
         <select v-model="selectedFilter" class="form-select w-auto" @change="applyFilter">
           <option value="month">This Month</option>
           <option value="week">This Week</option>
@@ -38,7 +44,9 @@
         <div class="col-12">
           <div class="card shadow">
             <div class="card-body">
-              <h5 class="text-success">💰 Sales</h5>
+              <h5 class="text-success">
+                <i class="bi bi-cash-coin me-1 text-success"></i> Sales
+              </h5>
               <div class="chart-container">
                 <Line :data="salesChartData" :options="chartOptions" />
               </div>
@@ -50,7 +58,9 @@
         <div class="col-12">
           <div class="card shadow">
             <div class="card-body">
-              <h5 class="text-primary">🛒 Orders</h5>
+              <h5 class="text-primary">
+                <i class="bi bi-basket me-1 text-primary"></i> Orders
+              </h5>
               <div class="chart-container">
                 <Bar :data="orderChartData" :options="chartOptions" />
               </div>
@@ -66,12 +76,15 @@
           v-for="metric in bottomMetrics"
           :key="metric.label"
         >
-          <div class="card shadow border-start border-4 h-100" :class="metric.border">
-            <div class="card-body">
-              <h6 class="text-muted">{{ metric.label }}</h6>
-              <h5 class="fw-bold mb-0" :class="metric.text">
-                {{ metric.value || 'N/A' }}
-              </h5>
+          <div class="card shadow border-start border-1 h-100" :class="metric.border">
+            <div class="card-body d-flex align-items-start">
+              <i :class="[metric.icon, metric.text]" class="fs-4 me-3"></i>
+              <div>
+                <h6 class="text-muted">{{ metric.label }}</h6>
+                <h5 class="fw-bold mb-0" :class="metric.text">
+                  {{ metric.value || 'N/A' }}
+                </h5>
+              </div>
             </div>
           </div>
         </div>
@@ -132,31 +145,34 @@ function applyFilter() {
 
 // 💳 Top Metric Cards
 const cards = computed(() => [
-  { label: 'Total Orders', count: props.metrics.totalOrders, icon: '🛒', border: 'border-primary' },
-  { label: 'Total Users', count: props.metrics.totalUsers, icon: '👤', border: 'border-info' },
-  { label: 'Total Sellers', count: props.metrics.totalSellers, icon: '🧑‍🎨', border: 'border-success' },
-  { label: 'Total Announcements', count: props.metrics.totalAnnouncements, icon: '📢', border: 'border-secondary' },
-  { label: 'Total Products Listed', count: props.metrics.totalProducts, icon: '📦', border: 'border-warning' },
-  { label: 'Pending Seller Applications', count: props.metrics.pendingSellerApplications, icon: '🧾', border: 'border-danger' },
+  { label: 'Total Orders', count: props.metrics.totalOrders, icon: 'bi bi-bag', text: 'text-primary', border: 'border-primary' },
+  { label: 'Total Users', count: props.metrics.totalUsers, icon: 'bi bi-people', text: 'text-info', border: 'border-info' },
+  { label: 'Total Sellers', count: props.metrics.totalSellers, icon: 'bi bi-person-workspace', text: 'text-success', border: 'border-success' },
+  { label: 'Total Announcements', count: props.metrics.totalAnnouncements, icon: 'bi bi-megaphone', text: 'text-dark', border: 'border-secondary' },
+  { label: 'Total Products Listed', count: props.metrics.totalProducts, icon: 'bi bi-box-seam', text: 'text-warning', border: 'border-warning' },
+  { label: 'Pending Seller Applications', count: props.metrics.pendingSellerApplications, icon: 'bi bi-journal-text', text: 'text-danger', border: 'border-danger' },
 ])
 
 // 🔥 Bottom Metric Cards
 const bottomMetrics = computed(() => [
   {
-    label: '🏪 Top Shop',
+    label: 'Top Shop',
     value: props.topMetrics.topShop,
+    icon: 'bi bi-shop',
     border: 'border-primary',
     text: 'text-primary',
   },
   {
-    label: '🧍 Top Customer',
+    label: 'Top Customer',
     value: props.topMetrics.topCustomer,
+    icon: 'bi bi-person-circle',
     border: 'border-success',
     text: 'text-success',
   },
   {
-    label: '🛍️ Top Selling Product',
+    label: 'Top Selling Product',
     value: props.topMetrics.topProduct,
+    icon: 'bi bi-star-fill',
     border: 'border-danger',
     text: 'text-danger',
   },

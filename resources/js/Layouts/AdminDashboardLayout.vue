@@ -1,10 +1,9 @@
 <template>
   <div>
     <!-- Sidebar -->
-    <nav id="sidebar" class="p-3 text-white" :class="{ show: sidebarOpen }">
-      <form class="mb-3">
-        <input type="text" class="form-control form-control-sm" placeholder="Search..." />
-      </form>
+    <nav id="sidebar" class="p-3 text-white bg-success" :class="{ show: sidebarOpen }">
+      <h4 class="text-center fw-bold mb-3">CraftSmart</h4>
+      <hr class="bg-secondary" />
 
       <ul class="nav flex-column mb-3">
         <Link href="/admin/dashboard" class="nav-link">
@@ -34,9 +33,6 @@
     🛒 Manage Marketplace
   </Link>
 </li>
-
-
-
 
       </ul>
       <hr class="bg-secondary" />
@@ -163,6 +159,12 @@ function logout() {
 <style scoped>
 body {
   overflow-x: hidden;
+}
+
+#sidebar .nav-link:hover {
+  background-color: #ffffff;
+  color: #198754 !important; /* Bootstrap's success color */
+  border-radius: 0.375rem;
 }
 
 #sidebar {

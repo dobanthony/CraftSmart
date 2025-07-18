@@ -63,8 +63,8 @@ function confirmDelete() {
 
 <template>
   <AdminDashboardLayout>
-    <div class="container py-4">
-      <h2 class="mb-4">👥 User Management</h2>
+    <div class="container">
+      <h2 class="mb-3"><i class="bi bi-people me-1 text-success"></i> User Management</h2>
 
       <div v-if="users.length === 0" class="alert alert-info">No users found.</div>
 

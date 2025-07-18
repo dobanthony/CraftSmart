@@ -5,7 +5,7 @@
 
     <!-- Create/Update Announcement Form -->
     <form @submit.prevent="submitForm" class="card card-body shadow-sm mb-5">
-      <h5 class="mb-3">{{ form.id ? '✏️ Update' : '➕ Create' }} Announcement</h5>
+      <h5 class="mb-3">{{ form.id ? ' Update' : ' Create' }} Announcement</h5>
       <div class="mb-3">
         <label class="form-label fw-semibold">Title</label>
         <input v-model="form.title" type="text" class="form-control" placeholder="Enter title..." required />
@@ -21,7 +21,7 @@
         ></textarea>
       </div>
       <div class="d-flex align-items-center gap-2">
-        <button type="submit" class="btn btn-primary" :disabled="submitting">
+        <button type="submit" class="btn btn-success" :disabled="submitting">
           <span v-if="submitting">
             <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
             Submitting...
@@ -50,13 +50,13 @@
         class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
       >
         <div class="me-3">
-          <h5 class="mb-1">{{ announcement.title }}</h5>
+          <h5 class="mb-1 text-success">{{ announcement.title }}</h5>
           <p class="mb-1 text-muted">{{ announcement.content }}</p>
           <small class="text-secondary"><i class="bi bi-clock text-success me-1"></i> {{ formatDate(announcement.created_at) }}</small>
         </div>
         <div class="btn-group align-self-center">
-          <button class="btn btn-sm btn-outline-primary" @click="edit(announcement)">Edit</button>
-          <button class="btn btn-sm btn-outline-danger" @click="destroy(announcement.id)">Delete</button>
+          <button class="btn btn-sm btn-primary" @click="edit(announcement)"><i class="bi bi-pencil-square me-1"> </i></button>
+          <button class="btn btn-sm btn-outline-danger" @click="destroy(announcement.id)"><i class="bi bi-trash3 me-1"></i></button>
         </div>
       </div>
     </div>
@@ -133,5 +133,17 @@ function formatDate(datetime) {
 <style scoped>
 .container {
   max-width: 800px;
+}
+input.form-control:focus {
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
+}
+textarea.form-control {
+  border-color: #28a745; /* green */
+  box-shadow: none;
+}
+textarea.form-control:focus {
+  border-color: #28a745; /* green */
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
 }
 </style>
