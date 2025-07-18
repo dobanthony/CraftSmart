@@ -134,16 +134,19 @@ function formatDate(datetime) {
 .container {
   max-width: 800px;
 }
+
 input.form-control:focus {
-  border-color: #28a745; /* green */
-  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
+  border-color: #28a745; 
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); 
 }
+
 textarea.form-control {
-  border-color: #28a745; /* green */
+  border-color: #28a745; 
   box-shadow: none;
 }
+
 textarea.form-control:focus {
-  border-color: #28a745; /* green */
-  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); /* green with 50% opacity */
+  border-color: #28a745; 
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.5); 
 }
 </style>

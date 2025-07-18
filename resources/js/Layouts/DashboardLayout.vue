@@ -334,7 +334,7 @@ body {
   position: fixed;
   top: 10px;
   z-index: 1065;
-  background-color: #343a40;
+  background-color: #198754;
   color: white;
   border: none;
   padding: 4px 10px;

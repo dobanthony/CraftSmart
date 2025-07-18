@@ -19,7 +19,7 @@
 </li>
 
 <li class="nav-item">
-    <Link href="/admin/users" class="nav-link" :class="{ active: page.url.startsWith('/admin/users') }">
+    <Link href="/admin/users" class="nav-link">
       <i class="bi bi-people me-1"></i> User Management
     </Link>
 </li>
@@ -264,7 +264,7 @@ body {
   position: fixed;
   top: 10px;
   z-index: 1065;
-  background-color: #343a40;
+  background-color: #198754;
   color: white;
   border: none;
   padding: 4px 10px;

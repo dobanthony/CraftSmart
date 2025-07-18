@@ -1,7 +1,7 @@
 <template>
   <AdminDashboardLayout>
-    <div class="container py-4">
-      <h2 class="mb-4">🛒 Marketplace Products</h2>
+    <div class="container">
+      <h4 class="mb-4"><i class="bi bi-box-seam me-1 text-success"></i>Sellers Products</h4>
 
       <!-- Flash Success Message -->
       <div v-if="message" class="alert alert-success">
@@ -39,16 +39,16 @@
       <!-- Sort Dropdown -->
       <div class="mb-3 d-flex justify-content-end">
         <select v-model="sort" class="form-select w-auto" @change="applySort">
-          <option value="all">📋 All Products</option>
-          <option value="newest">🆕 Newest (Last 2 Days)</option>
-          <option value="oldest">📦 Oldest (Before 2 Days)</option>
+          <option value="all"> All Products</option>
+          <option value="newest"> Newest (Last 2 Days)</option>
+          <option value="oldest"> Oldest (Before 2 Days)</option>
         </select>
       </div>
 
       <!-- Product Table (Responsive) -->
       <div class="table-responsive">
         <table class="table table-bordered table-hover">
-          <thead class="table-light">
+          <thead class="table-success">
             <tr>
               <th>Name</th>
               <th>Seller</th>
@@ -64,10 +64,10 @@
               <td>
                 <div class="d-flex flex-wrap gap-2">
                   <button class="btn btn-primary btn-sm" @click="openViewModal(product)">
-                    👁️ View
+                    <i class="bi bi-eye me-1 text-white"></i>View
                   </button>
-                  <button class="btn btn-danger btn-sm" @click="openDeleteModal(product)">
-                    🗑 Delete
+                  <button class="btn btn-outline-danger btn-sm" @click="openDeleteModal(product)">
+                    <i class="bi bi-trash3 me-1 text-danger"></i>Delete
                   </button>
                 </div>
               </td>
