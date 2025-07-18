@@ -47,7 +47,7 @@
               </div>
               <div class="mt-3">
                 <span class="badge bg-light text-secondary">
-                  📅 {{ formatDate(announcement.created_at) }}
+                  <i class="bi bi-calendar3 text-success"></i> {{ formatDate(announcement.created_at) }}
                 </span>
               </div>
             </div>
