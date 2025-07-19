@@ -1,5 +1,5 @@
 <?php
-
+//for index.vue - seller notifications
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
