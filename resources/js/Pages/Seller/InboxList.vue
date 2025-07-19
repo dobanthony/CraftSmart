@@ -24,7 +24,7 @@
 
             <!-- 👤 User Details -->
             <div class="flex-grow-1">
-              <strong class="text-success">{{ user.name }}</strong>
+              <strong class="text-success">{{ user.first_name }}</strong>
 
               <!-- 💬 Latest message preview -->
               <p

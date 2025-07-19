@@ -1,7 +1,9 @@
 <template>
   <DashboardLayout>
     <div class="container">
-      <h1 class="mb-4"><i class="bi bi-cart-check me-2"></i>My Cart</h1>
+      <div class="bg-success text-white p-2 mb-3 rounded-top-4">
+        <h4 class="text-white"><i class="bi bi-cart-check me-2"></i>My Cart</h4>
+      </div>
 
       <!-- 🔔 Empty Cart -->
       <div v-if="cartItems.length === 0" class="alert alert-info text-center">

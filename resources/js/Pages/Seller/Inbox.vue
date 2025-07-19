@@ -7,7 +7,7 @@
           :key="userId"
           class="border rounded mb-5 p-4 bg-white shadow-sm"
         >
-          <h5 class="mb-4">Chat with {{ conversation.user_name }}</h5>
+          <h5 class="mb-4">Chat with {{ conversation.firs_name }}</h5>
 
           <!-- 💬 Chat Box -->
           <div class="chat-box mb-3 p-3 bg-light rounded overflow-auto">
@@ -25,7 +25,7 @@
                 <img
                   :src="message.sender.id === shop.user_id
                     ? `/storage/${shop.shop_logo}`
-                    : (message.sender.avatar ? `/storage/${message.sender.avatar}` : '/images/default-user.png')"
+                    : (message.sender.avatar ? `/storage/${message.sender.avatar}` : '/images/default-avatar.jpg')"
                   class="rounded-circle mb-1"
                   style="width: 32px; height: 32px; object-fit: cover;"
                 />
@@ -36,7 +36,7 @@
                   :class="message.sender.id === shop.user_id ? 'bg-success text-white' : 'bg-white border text-dark'"
                 >
                   <div class="fw-bold small mb-1">
-                    {{ message.sender.id === shop.user_id ? 'You' : message.sender.name }}
+                    {{ message.sender.id === shop.user_id ? 'You' : message.sender.first_name }}
                   </div>
                   <div class="small">{{ message.message }}</div>
                 </div>

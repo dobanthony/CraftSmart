@@ -19,7 +19,6 @@ class CheckoutController extends Controller
         ]);
     }
 
-
     public function store(Request $request)
     {
         $request->validate([
@@ -46,7 +45,8 @@ class CheckoutController extends Controller
 
         return redirect()->route('my-orders')->with('success', 'Order placed. Waiting for approval.');
     }
-     public function bulkForm(Request $request)
+
+    public function bulkForm(Request $request)
     {
         $cartItems = collect($request->input('items', []));
 

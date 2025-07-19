@@ -1,9 +1,13 @@
 <template>
   <DashboardLayout>
     <div class="container">
+      <div class="bg-success text-white p-2 mb-3 rounded-top-4">
+        <h4 class="text-white">My Orders</h4>
+      </div>
+
       <!-- 🔍 Search and Filter -->
       <div class="row mb-4 g-2">
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-md-10">
           <input
             v-model="search"
             @keyup.enter="handleSearch"
@@ -11,7 +15,7 @@
             placeholder="Search by product, seller, or status"
           />
         </div>
-        <div class="col-6 col-md-3 col-lg-2">
+        <div class="col-md-2">
           <button class="btn btn-success w-100" @click="handleSearch">Search</button>
         </div>
       </div>

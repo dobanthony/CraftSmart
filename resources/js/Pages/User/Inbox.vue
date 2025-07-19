@@ -37,7 +37,7 @@
             style="max-width: 70%; min-width: 80px;"
           >
             <div class="fw-bold small mb-1">
-              {{ msg.sender.id === shop.user_id ? shop.shop_name : msg.sender.name }}
+              {{ msg.sender.id === shop.user_id ? shop.shop_name : msg.sender.first_name }}
             </div>
             <div>{{ msg.message }}</div>
           </div>

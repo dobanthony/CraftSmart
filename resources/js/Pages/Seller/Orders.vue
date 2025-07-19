@@ -43,7 +43,7 @@
           </thead>
           <tbody>
             <tr v-for="order in orders.data" :key="order.id">
-              <td>{{ order.user.name }}</td>
+              <td>{{ order.user.first_name }}</td>
               <td>{{ order.product.name }}</td>
               <td>{{ order.quantity }}</td>
               <td>

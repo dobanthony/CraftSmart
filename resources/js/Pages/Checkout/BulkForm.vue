@@ -1,33 +1,3 @@
-<script setup>
-import { useForm, Link } from '@inertiajs/vue3'
-import { defineProps } from 'vue'
-
-const props = defineProps({
-  cartItems: Array
-})
-
-const validItems = props.cartItems.filter(item => item.product && item.product.id)
-
-const orders = validItems.map(item => ({
-  product_id: item.product.id,
-  quantity: item.quantity
-}))
-
-const form = useForm({
-  full_name: '',
-  phone_number: '',
-  email: '',
-  delivery_address: '',
-  notes: '',
-  orders
-})
-
-const submit = () => {
-  form.post('/checkout-bulk/store', {
-  })
-}
-</script>
-
 <template>
   <div class="container py-5">
     <h2 class="mb-4">🧾 Delivery Information</h2>
@@ -67,3 +37,33 @@ const submit = () => {
     </div>
   </div>
 </template>
+
+<script setup>
+import { useForm, Link } from '@inertiajs/vue3'
+import { defineProps } from 'vue'
+
+const props = defineProps({
+  cartItems: Array
+})
+
+const validItems = props.cartItems.filter(item => item.product && item.product.id)
+
+const orders = validItems.map(item => ({
+  product_id: item.product.id,
+  quantity: item.quantity
+}))
+
+const form = useForm({
+  full_name: '',
+  phone_number: '',
+  email: '',
+  delivery_address: '',
+  notes: '',
+  orders
+})
+
+const submit = () => {
+  form.post('/checkout-bulk/store', {
+  })
+}
+</script>

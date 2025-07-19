@@ -1,7 +1,7 @@
 <template>
     <Head title="Profile" />
 
-    <DashboardLayout>
+    <AuthenticatedLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800"
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-    </DashboardLayout>
+    </AuthenticatedLayout>
 </template>
 
 <script setup>

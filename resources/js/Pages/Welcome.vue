@@ -17,7 +17,7 @@
       <!-- Features Section with Hover -->
       <section class="py-5 bg-white">
         <div class="container">
-          <h2 class="h3 fw-semibold text-dark text-center mb-4">Why Shop With Us?</h2>
+          <h2 class="h3 fw-semibold text-success text-center mb-4">Why Shop With Us?</h2>
           <div class="row text-center">
             <div class="col-md-4 mb-4 feature-card">
               <i class="bi bi-truck display-4 text-success"></i>
