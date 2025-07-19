@@ -2,7 +2,9 @@
   <DashboardLayout>
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <h4>Notifications</h4>
+      <div class="bg-success text-white p-2 mb-1 rounded-top-2">
+        <h4><i class="bi bi-bell me-2"></i>Notifications</h4>
+      </div>
       <button
         v-if="notifications.length > 0"
         class="btn btn-sm btn-success"

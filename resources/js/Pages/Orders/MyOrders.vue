@@ -268,7 +268,7 @@ input.form-control:focus {
 .pagination .page-link {
   color: rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
-  border-color: rgb(0, 0, 0);
+  border-color: #28a745;
 }
 .pagination .page-link:hover {
   color: white;
@@ -276,7 +276,7 @@ input.form-control:focus {
   border-color: #ffffff;
 }
 .pagination .page-link:focus {
-  border-color: black;
+  border-color: #28a745;
   box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.5); /* black with 50% opacity */
 }
 </style>
