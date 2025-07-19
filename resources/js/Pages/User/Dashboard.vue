@@ -29,7 +29,7 @@
       </div>
 
       <!-- ✅ Responsive Announcement Grid: 2 on mobile, 4 on desktop -->
-      <div class="row row-cols-2 row-cols-md-3 g-4">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
         <div
           v-for="announcement in announcements"
           :key="announcement.id"

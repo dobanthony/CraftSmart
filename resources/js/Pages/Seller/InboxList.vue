@@ -1,7 +1,9 @@
 <template>
   <SellerDashboardLayout>
     <div class="container py-4">
-      <h3>📨 Conversations with Customers</h3>
+      <div class="bg-success text-white p-2 mb-1 rounded-top-2">
+        <h3>Conversations with Customers</h3>
+      </div>
 
       <div v-if="users.length">
         <Link

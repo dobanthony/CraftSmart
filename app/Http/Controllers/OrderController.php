@@ -254,7 +254,9 @@ class OrderController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'required|string|max:1000',
             'product_id' => 'required|exists:products,id',
-            'photo' => 'nullable|image|max:2048',
+            // 'photo' => 'nullable|image|max:2048',
+            'photo' => 'nullable|image|max:15360', // 15 MB
+
         ]);
 
         if (Review::where('user_id', auth()->id())->where('order_id', $order->id)->exists()) {

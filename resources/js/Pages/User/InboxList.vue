@@ -1,7 +1,9 @@
 <template>
   <DashboardLayout>
-    <div class="container py-4">
-      <h4 class="text-dark">Conversations</h4>
+    <div class="container">
+      <div class="bg-success text-white p-2 mb-3 rounded-top-4">
+        <h3>Conversations with Customers</h3>
+      </div>
 
       <div v-if="shops.length">
         <Link

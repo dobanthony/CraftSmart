@@ -5,7 +5,7 @@
         <h4 class="text-white">My Orders</h4>
       </div>
 
-      <!-- 🔍 Search and Filter -->
+      <!-- Search and Filter -->
       <div class="row mb-4 g-2">
         <div class="col-md-10">
           <input
@@ -88,7 +88,7 @@
               <td class="text-nowrap">{{ formatDate(order.created_at) }}</td>
               <td>
                 <button
-                  v-if="!order.received_order && order.status !== 'canceled'"
+                  v-if="order.status !== 'canceled' && order.status !== 'declined'"
                   @click="$inertia.visit(`/receipt/${order.id}`)"
                   class="btn btn-sm btn-outline-success"
                 >
@@ -139,7 +139,7 @@
               <p><strong>Delivery:</strong> {{ order.delivery_date ?? 'N/A' }}</p>
 
               <button
-                v-if="!order.received_order && order.status !== 'canceled'"
+                v-if="order.status !== 'canceled' && order.status !== 'declined'"
                 @click="$inertia.visit(`/receipt/${order.id}`)"
                 class="btn btn-sm btn-outline-primary w-100"
               >
